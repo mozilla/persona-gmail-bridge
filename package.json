@@ -1,0 +1,22 @@
+{
+  "name": "sideshow",
+  "version": "0.0.0",
+  "private": true,
+  "description": "An experiment in building a minimal Gmail ProxyIDP",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/callahad/sideshow"
+  },
+  "author": "Dan Callahan <dan.callahan@gmail.com>",
+  "license": "MPL 2.0",
+  "scripts": {
+    "start":  "node ./server.js",
+    "test": "./node_modules/.bin/mocha --check-leaks --recursive ./test/"
+  },
+  "dependencies": {
+    "express": "3.x"
+  },
+  "devDependencies": {
+    "mocha": "1.9.x"
+  }
+}
