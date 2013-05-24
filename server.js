@@ -2,6 +2,18 @@ const path = require('path');
 
 const express = require('express');
 const i18n = require('i18n-abide');
+const openid = require('openid');
+
+const openidRP = new openid.RelyingParty(
+  'http://localhost:3000/authenticate/verify', // Verification URL
+  null, // Realm
+  true, // Use stateless verification
+  false, // Strict mode
+  [ // List of extensions to enable and include
+    new openid.AttributeExchange(
+      {'http://axschema.org/contact/email': 'required'})
+  ]);
+const googleEndpoint = 'https://www.google.com/accounts/o8/id';
 
 const app = express();
 
@@ -30,6 +42,28 @@ app.get('/provision', function (req, res) {
 
 app.get('/authenticate', function (req, res) {
   res.render('authenticate');
+});
+
+app.get('/authenticate/forward', function (req, res) {
+  openidRP.authenticate(googleEndpoint, false, function (error, authUrl) {
+    if (error || !authUrl) {
+      res.send(500);
+    } else {
+      res.redirect(authUrl);
+    }
+  });
+});
+
+app.get('/authenticate/verify', function (req, res) {
+  openidRP.verifyAssertion(req, function (error, result) {
+    if (error && error.message === 'Authentication cancelled') {
+      res.redirect('http://127.0.0.1:10002/sign_in#AUTH_RETURN_CANCEL');
+    } else if (error || !result.authenticated) {
+      res.send(403, 'Authentication failed: ' + error.message);
+    } else {
+      res.send(200, result.email);
+    }
+  });
 });
 
 app.listen(3000);

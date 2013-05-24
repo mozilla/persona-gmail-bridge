@@ -11,8 +11,7 @@
     <script src="http://127.0.0.1:10002/authentication_api.js"></script>
     <script>
       navigator.id.beginAuthentication(function (email) {
-        console.log(email);
-        navigator.id.raiseAuthenticationFailure();
+        window.location = '/authenticate/forward';
       });
     </script>
   </body>
