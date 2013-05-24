@@ -11,9 +11,12 @@
     <script src="http://127.0.0.1:10002/provisioning_api.js"></script>
     <script>
       navigator.id.beginProvisioning(function (email, duration) {
-        console.log(email);
-        console.log(duration);
-        navigator.id.raiseProvisioningFailure();
+        if (email === "<%= certify %>") {
+          alert("Congratulations! If browserid-certifier was hooked up, you would be certified as: <%= certify %>");
+          navigator.id.raiseProvisioningFailure();
+        } else {
+          navigator.id.raiseProvisioningFailure();
+        }
       });
     </script>
   </body>

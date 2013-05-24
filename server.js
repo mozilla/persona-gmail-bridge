@@ -41,7 +41,8 @@ app.get('/.well-known/browserid', function (req, res) {
 });
 
 app.get('/provision', function (req, res) {
-  res.render('provision');
+  res.clearCookie('certify');
+  res.render('provision', { certify: req.signedCookies.certify });
 });
 
 app.get('/authenticate', function (req, res) {
@@ -63,10 +64,13 @@ app.get('/authenticate/verify', function (req, res) {
   openidRP.verifyAssertion(req, function (error, result) {
     if (error && error.message === 'Authentication cancelled') {
       res.redirect('http://127.0.0.1:10002/sign_in#AUTH_RETURN_CANCEL');
-    } else if (error || !result.authenticated) {
+    } else if (error || !result.authenticated || !result.email) {
       res.send(403, 'Authentication failed: ' + error.message);
+    } else if (compare(req.signedCookies.claimed, result.email)) {
+      res.cookie('certify', result.email, { signed: true });
+      res.render('authenticate_finish');
     } else {
-      res.send(200, 'Claim: ' + req.signedCookies.claimed + ', Proof: ' + result.email + ', Matches? ' + compare(req.signedCookies.claimed, result.email));
+      res.send(403, 'Authentication failed: ' + 'Identity mismatch');
     }
   });
 });
