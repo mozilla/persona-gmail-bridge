@@ -20,6 +20,8 @@ const app = express();
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
 
+app.use(express.cookieParser('CHANGE ME'));
+
 app.use(i18n.abide({
   supported_languages: ['en-US', 'it-CH'],
   default_lang: 'en-US',
@@ -46,9 +48,10 @@ app.get('/authenticate', function (req, res) {
 
 app.get('/authenticate/forward', function (req, res) {
   openidRP.authenticate(googleEndpoint, false, function (error, authUrl) {
-    if (error || !authUrl) {
+    if (error || !authUrl || !req.query.email) {
       res.send(500);
     } else {
+      res.cookie('claimed', req.query.email, { signed: true });
       res.redirect(authUrl);
     }
   });
@@ -61,7 +64,7 @@ app.get('/authenticate/verify', function (req, res) {
     } else if (error || !result.authenticated) {
       res.send(403, 'Authentication failed: ' + error.message);
     } else {
-      res.send(200, result.email);
+      res.send(200, 'Claim: ' + req.signedCookies.claimed + ', Proof: ' + result.email);
     }
   });
 });

@@ -11,7 +11,8 @@
     <script src="http://127.0.0.1:10002/authentication_api.js"></script>
     <script>
       navigator.id.beginAuthentication(function (email) {
-        window.location = '/authenticate/forward';
+        var escapedEmail = encodeURIComponent(email);
+        window.location = '/authenticate/forward?email=' + escapedEmail;
       });
     </script>
   </body>
