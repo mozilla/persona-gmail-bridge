@@ -14,7 +14,8 @@
     "test": "./node_modules/.bin/mocha --check-leaks --recursive ./test/"
   },
   "dependencies": {
-    "express": "3.x"
+    "express": "3.x",
+    "i18n-abide": "~0.0.8"
   },
   "devDependencies": {
     "mocha": "1.9.x"
