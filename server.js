@@ -10,6 +10,10 @@ app.use(i18n.abide({
   translation_directory: 'i18n'
 }));
 
+app.get('/__heartbeat__', function (req, res) {
+  res.send('ok');
+});
+
 app.get('/.well-known/browserid', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
   res.send('{"disable": true}');
