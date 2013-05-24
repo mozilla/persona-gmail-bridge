@@ -15,6 +15,9 @@ describe('Gmail Address Comparison', function () {
       assert(!compare(false, false));
       assert(!compare(undefined, undefined));
     });
+    it('should be false if either is at a non-gmail domain', function () {
+      assert(!compare('alice@google.com', 'alice@google.com'));
+    });
   });
   describe('Letter casing', function () {
     it('should be ignored', function () {
