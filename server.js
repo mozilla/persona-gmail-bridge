@@ -5,7 +5,7 @@ const i18n = require('i18n-abide');
 const openid = require('openid');
 
 const openidRP = new openid.RelyingParty(
-  'http://localhost:3000/authenticate/verify', // Verification URL
+  'http://127.0.0.1:3000/authenticate/verify', // Verification URL
   null, // Realm
   true, // Use stateless verification
   false, // Strict mode
