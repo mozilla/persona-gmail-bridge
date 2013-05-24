@@ -41,8 +41,19 @@ app.get('/.well-known/browserid', function (req, res) {
 });
 
 app.get('/provision', function (req, res) {
+  var email = '';
+  var meta = {};
+  var ttl = 5 * 60 * 1000; // Invalidate signing cookies after 5 minutes
+
+  try { meta = JSON.parse(req.signedCookies.certify); }
+  catch (e) { /* ignore invalid JSON */ }
+
+  if (meta.email && meta.issued && (Date.now() - meta.issued) < ttl) {
+    email = meta.email;
+  }
+
   res.clearCookie('certify');
-  res.render('provision', { certify: req.signedCookies.certify });
+  res.render('provision', { certify: email });
 });
 
 app.get('/authenticate', function (req, res) {
@@ -67,7 +78,9 @@ app.get('/authenticate/verify', function (req, res) {
     } else if (error || !result.authenticated || !result.email) {
       res.send(403, 'Authentication failed: ' + error.message);
     } else if (compare(req.signedCookies.claimed, result.email)) {
-      res.cookie('certify', result.email, { signed: true });
+      res.cookie('certify',
+                 JSON.stringify({ email: result.email, issued: Date.now() }),
+                 { signed: true });
       res.render('authenticate_finish');
     } else {
       res.send(403, 'Authentication failed: ' + 'Identity mismatch');
