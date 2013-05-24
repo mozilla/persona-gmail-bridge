@@ -12,7 +12,8 @@ const openidRP = new openid.RelyingParty(
   false, // Strict mode
   [ // List of extensions to enable and include
     new openid.AttributeExchange(
-      {'http://axschema.org/contact/email': 'required'})
+      {'http://axschema.org/contact/email': 'required'}),
+    new openid.UserInterface({mode: 'popup'})
   ]);
 const googleEndpoint = 'https://www.google.com/accounts/o8/id';
 
