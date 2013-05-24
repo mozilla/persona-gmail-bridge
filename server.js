@@ -16,7 +16,7 @@ app.get('/__heartbeat__', function (req, res) {
 
 app.get('/.well-known/browserid', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
-  res.send('{"disable": true}');
+  res.sendfile('fake-well-known.json');
 });
 
 app.get('/provision', function (req, res) {
