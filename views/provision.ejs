@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="<%= lang %>" dir="<%= lang_dir %>">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title><%= gettext('Loading') %></title>
+  </head>
+  <body>
+    <h1><%= gettext('Loading') %></h1>
+    <script src="http://127.0.0.1:10002/provisioning_api.js"></script>
+    <script>
+      navigator.id.beginProvisioning(function (email, duration) {
+        console.log(email);
+        console.log(duration);
+        navigator.id.raiseProvisioningFailure();
+      });
+    </script>
+  </body>
+</html>
