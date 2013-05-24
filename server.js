@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const i18n = require('i18n-abide');
 const openid = require('openid');
+const compare = require('./lib/compare');
 
 const openidRP = new openid.RelyingParty(
   'http://127.0.0.1:3000/authenticate/verify', // Verification URL
@@ -64,7 +65,7 @@ app.get('/authenticate/verify', function (req, res) {
     } else if (error || !result.authenticated) {
       res.send(403, 'Authentication failed: ' + error.message);
     } else {
-      res.send(200, 'Claim: ' + req.signedCookies.claimed + ', Proof: ' + result.email);
+      res.send(200, 'Claim: ' + req.signedCookies.claimed + ', Proof: ' + result.email + ', Matches? ' + compare(req.signedCookies.claimed, result.email));
     }
   });
 });
