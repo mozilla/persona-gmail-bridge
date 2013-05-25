@@ -1,0 +1,8 @@
+<% include _header %>
+<h1><%= gettext('Error') %></h1>
+<p><%= gettext("Something went wrong. Please try again later.") %></p>
+<p><a href="http://127.0.0.1:10002/sign_in#AUTH_RETURN_CANCEL">Cancel</a></p>
+<% if (info) { %>
+  <p>Error: <%= info %></p>
+<% } %>
+<% include _footer %>
