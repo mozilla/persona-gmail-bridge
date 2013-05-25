@@ -57,13 +57,13 @@ app.get('/provision', function (req, res) {
 });
 
 app.get('/authenticate', function (req, res) {
-  res.render('authenticate');
+  res.render('authenticate', { title: req.gettext('Loading...') });
 });
 
 app.get('/authenticate/forward', function (req, res) {
   openidRP.authenticate(googleEndpoint, false, function (error, authUrl) {
     if (error || !authUrl || !req.query.email) {
-      res.status(500).render('error');
+      res.status(500).render('error', { title: req.gettext('Error') });
     } else {
       res.cookie('claimed', req.query.email, { signed: true });
       res.redirect(authUrl);
@@ -76,15 +76,17 @@ app.get('/authenticate/verify', function (req, res) {
     if (error && error.message === 'Authentication cancelled') {
       res.redirect('http://127.0.0.1:10002/sign_in#AUTH_RETURN_CANCEL');
     } else if (error || !result.authenticated || !result.email) {
-      res.status(403).render('error', { info: error.message });
+      res.status(403).render('error',
+        { title: req.gettext('Error'), info: error.message });
     } else if (compare(req.signedCookies.claimed, result.email)) {
       res.cookie('certify',
                  JSON.stringify({ email: result.email, issued: Date.now() }),
                  { signed: true });
-      res.render('authenticate_finish');
+      res.render('authenticate_finish', { title: req.gettext('Loading...') });
     } else {
       res.status(409).render('error_mismatch',
-        { claimed: req.signedCookies.claimed, proven: result.email });
+        { title: req.gettext('Accounts do not match'),
+          claimed: req.signedCookies.claimed, proven: result.email });
     }
   });
 });

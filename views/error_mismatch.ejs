@@ -1,5 +1,5 @@
 <% include _header %>
-<h1><%= gettext("Accounts don't match") %></h1>
+<h1><%= title %></h1>
 <p><%- format(gettext("It looks like you were trying to sign in as %(claimed)s but were actually signed into Google as %(proven)s."),
        { claimed: '<b>' + escape(claimed) + '</b>', proven: '<b>' + proven + '</b>' }) %></p>
 <p><%- format(gettext("Please sign into Google as %s then try again."),
