@@ -2,6 +2,9 @@
 <h1><%= title %></h1>
 <script src="http://127.0.0.1:10002/authentication_api.js"></script>
 <script>
+  localStorage.height = window.outerHeight || document.documentElement.offsetHeight;
+  localStorage.width = window.outerWidth || document.documentElement.offsetWidth;
+
   navigator.id.beginAuthentication(function (email) {
     var escapedEmail = encodeURIComponent(email);
     window.location = '/authenticate/forward?email=' + escapedEmail;
