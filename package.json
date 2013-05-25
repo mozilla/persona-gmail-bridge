@@ -11,16 +11,18 @@
   "license": "MPL 2.0",
   "scripts": {
     "start":  "node ./server.js",
-    "test": "./node_modules/.bin/mocha --check-leaks --recursive ./test/"
+    "test": "mocha --check-leaks --recursive ./test/"
   },
   "dependencies": {
+    "convict": "0.2.3",
+    "ejs": "0.8.x",
     "express": "3.x",
     "i18n-abide": "~0.0.8",
-    "ejs": "0.8.x",
-    "openid": "0.5.x",
-    "convict": "~0.2.3"
+    "jwcrypto": "0.4.3",
+    "openid": "0.5.x"
   },
   "devDependencies": {
-    "mocha": "1.9.x"
+    "mocha": "1.9.x",
+    "request": "2.21.0"
   }
 }
