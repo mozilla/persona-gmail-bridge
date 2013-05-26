@@ -6,7 +6,7 @@ Sideshow is an experiment in building a minimal identity bridge for Gmail.
 Getting Started
 ---------------
 
-Running sideshow is simple:
+Running Sideshow is simple:
 
 1. `git clone https://github.com/callahad/sideshow.git`
 2. `cd sideshow`
@@ -22,3 +22,12 @@ For local development, set the `SHIMMED_PRIMARIES` environment variable for gmai
 You're done!
 
 Visit http://127.0.0.1:10001/ and try signing in with your Gmail account!
+
+Configuration
+-------------
+
+As part of the OpenID protocol, Sideshow needs to make outbound connections to Google.
+To route these requests through a proxy, set the following environment variables:
+
+- `HTTP_PROXY_HOST` and `HTTP_PROXY_PORT` control how `http://` requests are sent
+- `HTTPS_PROXY_HOST` and `HTTPS_PROXY_PORT` control how `https://` requests are sent
