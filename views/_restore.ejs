@@ -1,0 +1,13 @@
+<script>
+  if (!! localStorage.width && !! localStorage.height) {
+    var w = parseInt(localStorage.getItem('width'), 10);
+    var h = parseInt(localStorage.getItem('height'), 10);
+    if (! isNaN(w) && w > 100 && ! isNaN(h) && h > 100) {
+      window.resizeTo(w, h);
+      if (localStorage.removeItem) {
+        localStorage.removeItem('width');
+        localStorage.removeItem('height');
+      }
+    }
+  }
+</script>

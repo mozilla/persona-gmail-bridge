@@ -2,6 +2,11 @@
 <h1><%= title %></h1>
 <script src="http://127.0.0.1:10002/authentication_api.js"></script>
 <script>
+  // Store window dimensions, to be restored upon returning from Google OpenID
+  localStorage.height = window.outerHeight || document.documentElement.offsetHeight;
+  localStorage.width = window.outerWidth || document.documentElement.offsetWidth;
+
+  // Get the claimed email address and hand it off to the backend
   navigator.id.beginAuthentication(function (email) {
     var escapedEmail = encodeURIComponent(email);
     window.location = '/authenticate/forward?email=' + escapedEmail;
