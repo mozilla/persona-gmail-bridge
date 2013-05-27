@@ -3,6 +3,6 @@
 <p><%- format(gettext("It looks like you were trying to sign in as %(claimed)s but were actually signed into Google as %(proven)s."),
        { claimed: '<b>' + escape(claimed) + '</b>', proven: '<b>' + proven + '</b>' }) %></p>
 <p><%- format(gettext("Please sign into Google as %s then try again."),
-       ['<b>' + proven + '</b>']) %></p>
+       ['<b>' + escape(claimed) + '</b>']) %></p>
 <p><a href="http://127.0.0.1:10002/sign_in#AUTH_RETURN_CANCEL">Try again</a></p>
 <% include _footer %>
