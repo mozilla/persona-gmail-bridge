@@ -27,10 +27,10 @@ app.set('view engine', 'ejs');
 app.use(express.cookieParser(config.get('secret')));
 
 app.use(i18n.abide({
-  supported_languages: ['en-US', 'it-CH'],
-  default_lang: 'en-US',
-  debug_lang: 'it-CH',
-  translation_directory: 'i18n'
+  supported_languages: config.get('localeList'),
+  default_lang: config.get('localeDefault'),
+  debug_lang: config.get('localeDebug'),
+  translation_directory: config.get('localePath')
 }));
 
 app.locals.personaUrl = config.get('personaUrl');
