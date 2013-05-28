@@ -45,7 +45,7 @@ app.get('/.well-known/browserid', function (req, res) {
 app.get('/provision', function (req, res) {
   var email = '';
   var meta = {};
-  var ttl = 5 * 60 * 1000; // Invalidate signing cookies after 5 minutes
+  var ttl = config.get('ticketDuration');
 
   try { meta = JSON.parse(req.signedCookies.certify); }
   catch (e) { /* ignore invalid JSON */ }
