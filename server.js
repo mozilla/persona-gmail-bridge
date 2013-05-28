@@ -3,10 +3,12 @@ const path = require('path');
 const express = require('express');
 const i18n = require('i18n-abide');
 const openid = require('openid');
+
 const compare = require('./lib/compare');
+const config = require('./lib/config');
 
 const openidRP = new openid.RelyingParty(
-  'http://127.0.0.1:3000/authenticate/verify', // Verification URL
+  config.get('bridgeUrl') + '/authenticate/verify', // Verification URL
   null, // Realm
   true, // Use stateless verification
   false, // Strict mode
@@ -91,4 +93,4 @@ app.get('/authenticate/verify', function (req, res) {
   });
 });
 
-app.listen(3000);
+app.listen(config.get('port'), config.get('host'));
