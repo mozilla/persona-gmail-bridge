@@ -24,7 +24,7 @@ const app = express();
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
 
-app.use(express.cookieParser('CHANGE ME'));
+app.use(express.cookieParser(config.get('secret')));
 
 app.use(i18n.abide({
   supported_languages: ['en-US', 'it-CH'],
