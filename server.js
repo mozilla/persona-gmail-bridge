@@ -8,7 +8,7 @@ const compare = require('./lib/compare');
 const config = require('./lib/config');
 
 const openidRP = new openid.RelyingParty(
-  config.get('bridgeUrl') + '/authenticate/verify', // Verification URL
+  config.get('publicUrl') + '/authenticate/verify', // Verification URL
   null, // Realm
   true, // Use stateless verification
   false, // Strict mode
