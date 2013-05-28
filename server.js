@@ -33,6 +33,8 @@ app.use(i18n.abide({
   translation_directory: 'i18n'
 }));
 
+app.locals.personaUrl = config.get('personaUrl');
+
 app.get('/__heartbeat__', function (req, res) {
   res.send('ok');
 });
@@ -76,7 +78,7 @@ app.get('/authenticate/forward', function (req, res) {
 app.get('/authenticate/verify', function (req, res) {
   openidRP.verifyAssertion(req, function (error, result) {
     if (error && error.message === 'Authentication cancelled') {
-      res.redirect('http://127.0.0.1:10002/sign_in#AUTH_RETURN_CANCEL');
+      res.redirect(config.get('personaUrl') + '/sign_in#AUTH_RETURN_CANCEL');
     } else if (error || !result.authenticated || !result.email) {
       res.status(403).render('error',
         { title: req.gettext('Error'), info: error.message });

@@ -6,7 +6,7 @@
     <title>Persona / Google Identity Bridge</title>
   </head>
   <body>
-    <script src="http://127.0.0.1:10002/provisioning_api.js"></script>
+    <script src="<%= personaUrl %>/provisioning_api.js"></script>
     <script>
       navigator.id.beginProvisioning(function (email, duration) {
         if (email === "<%= certify %>") {
