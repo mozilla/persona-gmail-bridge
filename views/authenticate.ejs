@@ -1,6 +1,6 @@
 <% include _header %>
 <h1><%= title %></h1>
-<script src="http://127.0.0.1:10002/authentication_api.js"></script>
+<script src="<%= personaUrl %>/authentication_api.js"></script>
 <script>
   navigator.id.beginAuthentication(function (email) {
     var escapedEmail = encodeURIComponent(email);
