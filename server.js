@@ -3,10 +3,12 @@ const path = require('path');
 const express = require('express');
 const i18n = require('i18n-abide');
 const openid = require('openid');
+
 const compare = require('./lib/compare');
+const config = require('./lib/config');
 
 const openidRP = new openid.RelyingParty(
-  'http://127.0.0.1:3000/authenticate/verify', // Verification URL
+  config.get('publicUrl') + '/authenticate/verify', // Verification URL
   null, // Realm
   true, // Use stateless verification
   false, // Strict mode
@@ -22,14 +24,16 @@ const app = express();
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
 
-app.use(express.cookieParser('CHANGE ME'));
+app.use(express.cookieParser(config.get('secret')));
 
 app.use(i18n.abide({
-  supported_languages: ['en-US', 'it-CH'],
-  default_lang: 'en-US',
-  debug_lang: 'it-CH',
-  translation_directory: 'i18n'
+  supported_languages: config.get('localeList'),
+  default_lang: config.get('localeDefault'),
+  debug_lang: config.get('localeDebug'),
+  translation_directory: config.get('localePath')
 }));
+
+app.locals.personaUrl = config.get('personaUrl');
 
 app.get('/__heartbeat__', function (req, res) {
   res.send('ok');
@@ -43,7 +47,7 @@ app.get('/.well-known/browserid', function (req, res) {
 app.get('/provision', function (req, res) {
   var email = '';
   var meta = {};
-  var ttl = 5 * 60 * 1000; // Invalidate signing cookies after 5 minutes
+  var ttl = config.get('ticketDuration');
 
   try { meta = JSON.parse(req.signedCookies.certify); }
   catch (e) { /* ignore invalid JSON */ }
@@ -74,7 +78,7 @@ app.get('/authenticate/forward', function (req, res) {
 app.get('/authenticate/verify', function (req, res) {
   openidRP.verifyAssertion(req, function (error, result) {
     if (error && error.message === 'Authentication cancelled') {
-      res.redirect('http://127.0.0.1:10002/sign_in#AUTH_RETURN_CANCEL');
+      res.redirect(config.get('personaUrl') + '/sign_in#AUTH_RETURN_CANCEL');
     } else if (error || !result.authenticated || !result.email) {
       res.status(403).render('error',
         { title: req.gettext('Error'), info: error.message });
@@ -91,4 +95,4 @@ app.get('/authenticate/verify', function (req, res) {
   });
 });
 
-app.listen(3000);
+app.listen(config.get('port'), config.get('host'));
