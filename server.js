@@ -78,7 +78,8 @@ app.get('/authenticate/forward', function (req, res) {
 app.get('/authenticate/verify', function (req, res) {
   openidRP.verifyAssertion(req, function (error, result) {
     if (error && error.message === 'Authentication cancelled') {
-      res.redirect(config.get('personaUrl') + '/sign_in#AUTH_RETURN_CANCEL');
+      res.render('authenticate_finish',
+        { title: req.gettext('Loading...'), success: false });
     } else if (error || !result.authenticated || !result.email) {
       res.status(403).render('error',
         { title: req.gettext('Error'), info: error.message });
@@ -86,7 +87,8 @@ app.get('/authenticate/verify', function (req, res) {
       res.cookie('certify',
                  JSON.stringify({ email: result.email, issued: Date.now() }),
                  { signed: true });
-      res.render('authenticate_finish', { title: req.gettext('Loading...') });
+      res.render('authenticate_finish',
+        { title: req.gettext('Loading...'), success: true });
     } else {
       res.status(409).render('error_mismatch',
         { title: req.gettext('Accounts do not match'),
