@@ -4,6 +4,7 @@ const express = require('express');
 const i18n = require('i18n-abide');
 const openid = require('openid');
 
+const caching = require('./lib/caching');
 const compare = require('./lib/compare');
 const config = require('./lib/config');
 
@@ -25,6 +26,20 @@ app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
 
 app.use(express.cookieParser(config.get('secret')));
+
+// No user-specific information. Localized or caching otherwise discouraged.
+app.use(caching.revalidate([
+  '/.well-known/browserid',
+  '/authenticate',
+  '/authenticate/forward'
+]));
+
+// User-specific information or caching prohibited.
+app.use(caching.prevent([
+  '/__heartbeat__',
+  '/provision',
+  '/authenticate/verify'
+]));
 
 app.use(i18n.abide({
   supported_languages: config.get('localeList'),
