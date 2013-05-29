@@ -4,5 +4,10 @@
        { claimed: '<b>' + escape(claimed) + '</b>', proven: '<b>' + proven + '</b>' }) %></p>
 <p><%- format(gettext("Please sign into Google as %s then try again."),
        ['<b>' + escape(claimed) + '</b>']) %></p>
-<p><a href="<%= personaUrl %>/sign_in#AUTH_RETURN_CANCEL">Try again</a></p>
+<p><button id="cancel">Try again</button></p>
+<script src="<%= personaUrl %>/authentication_api.js"></script>
+<script>
+  var cancelButton = document.getElementById('cancel');
+  cancelButton.onclick = function () { navigator.id.raiseAuthenticationFailure() };
+</script>
 <% include _footer %>

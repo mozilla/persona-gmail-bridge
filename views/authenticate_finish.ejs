@@ -2,6 +2,10 @@
 <h1><%= title %></h1>
 <script src="<%= personaUrl %>/authentication_api.js"></script>
 <script>
+<% if (success) { %>
   navigator.id.completeAuthentication();
+<% } else { %>
+  navigator.id.raiseAuthenticationFailure();
+<% } %>
 </script>
 <% include _footer %>
