@@ -1,8 +1,13 @@
 <% include _header %>
 <h1><%= title %></h1>
 <p><%= gettext("Something went wrong. Please try again later.") %></p>
-<p><a href="<%= personaUrl %>/sign_in#AUTH_RETURN_CANCEL">Cancel</a></p>
+<p><button id="cancel">Cancel</button></p>
 <% if (info) { %>
   <p>Error: <%= info %></p>
 <% } %>
+<script src="<%= personaUrl %>/authentication_api.js"></script>
+<script>
+  var cancelButton = document.getElementById('cancel');
+  cancelButton.onclick = function () { navigator.id.raiseAuthenticationFailure() };
+</script>
 <% include _footer %>
