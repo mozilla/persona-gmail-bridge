@@ -1,9 +1,11 @@
 const path = require('path');
 const fs = require('fs');
+const url = require('url');
 
 const express = require('express');
 const i18n = require('i18n-abide');
 const openid = require('openid');
+const clientSessions = require('client-sessions');
 
 const caching = require('./lib/caching');
 const compare = require('./lib/compare');
@@ -35,7 +37,15 @@ app.set('view engine', 'ejs');
 app.use('/static', express.static('static'));
 app.use(express.json());
 
-app.use(express.cookieParser(config.get('secret')));
+app.use(clientSessions({
+  cookieName: 'session',
+  secret: config.get('secret'),
+  duration: config.get('ticketDuration'),
+  cookie: {
+    maxAge: config.get('ticketDuration'),
+    secure: url.parse(config.get('publicUrl')).protocol === 'https:'
+  }
+}));
 
 // No user-specific information. Localized or caching otherwise discouraged.
 app.use(caching.revalidate([
@@ -76,17 +86,17 @@ app.get('/.well-known/browserid', function (req, res) {
 });
 
 function getAuthedEmail(req) {
-  var cookie = req.signedCookies.certify;
+  var certify = req.session.certify;
   var authedEmail = '';
   var ttl = config.get('ticketDuration');
-  if (cookie && cookie.email && cookie.issued && (Date.now() - cookie.issued) < ttl) {
-    authedEmail = cookie.email;
+  if (certify && certify.email && certify.issued && (Date.now() - certify.issued) < ttl) {
+    authedEmail = certify.email;
   }
   return authedEmail;
 }
 
 app.get('/provision', function (req, res) {
-  var claimed = req.signedCookies.claimed;
+  var claimed = req.session.claimed;
   // the authed email will have been normalized, but navigator.id should
   // give us the claimed email again. As long we're sure the original
   // claimed email normalizes to the authed email, we can proceed.
@@ -100,7 +110,7 @@ app.post('/provision/certify', function(req, res) {
   var isCorrectEmail = compare(req.body.email, getAuthedEmail(req));
 
   // trying to sign a cert? then kill this cookie while we're here.
-  res.clearCookie('certify');
+  req.session.reset();
   if (!isCorrectEmail) {
     return res.send(401, "Email isn't verified.");
   }
@@ -130,7 +140,7 @@ app.get('/authenticate/forward', function (req, res) {
     if (error || !authUrl || !req.query.email) {
       res.status(500).render('error', { title: req.gettext('Error') });
     } else {
-      res.cookie('claimed', req.query.email, { signed: true });
+      req.session.claimed = req.query.email;
       res.redirect(authUrl);
     }
   });
@@ -144,15 +154,14 @@ app.get('/authenticate/verify', function (req, res) {
     } else if (error || !result.authenticated || !result.email) {
       res.status(403).render('error',
         { title: req.gettext('Error'), info: error.message });
-    } else if (compare(req.signedCookies.claimed, result.email)) {
-      res.cookie('certify', { email: result.email, issued: Date.now() },
-                 { signed: true });
+    } else if (compare(req.session.claimed, result.email)) {
+      req.session.certify = { email: result.email, issued: Date.now() };
       res.render('authenticate_finish',
         { title: req.gettext('Loading...'), success: true });
     } else {
       res.status(409).render('error_mismatch',
         { title: req.gettext('Accounts do not match'),
-          claimed: req.signedCookies.claimed, proven: result.email });
+          claimed: req.session.claimed, proven: result.email });
     }
   });
 });
