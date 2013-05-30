@@ -16,7 +16,7 @@ Running Sideshow is simple:
 For local development, set the `SHIMMED_PRIMARIES` environment variable for gmail.com and googlemail.com before you start up browserid:
 
 1. `cd /path/to/browserid`
-2. `export SHIMMED_PRIMARIES='gmail.com|http://127.0.0.1:3000|/path/to/sideshow/fake-well-known.json,googlemail.com|http://127.0.0.1:3000|/path/to/sideshow/fake-well-known.json'`
+2. `export SHIMMED_PRIMARIES='gmail.com|http://127.0.0.1:3000|/path/to/sideshow/var/well-known.json,googlemail.com|http://127.0.0.1:3000|/path/to/sideshow/var/well-known.json'`
 3. `npm start`
 
 You're done!
