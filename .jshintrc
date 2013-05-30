@@ -4,7 +4,6 @@
   "browser": true,
   "camelcase": true,
   "curly": true,
-  "es5": true,
   "esnext": true,
   "eqeqeq": true,
   "eqnull": true,
@@ -21,10 +20,9 @@
   "noarg": true,
   "passfail": false,
   "shadow": true,
-  "strict": false
+  "strict": false,
   "supernew": false,
   "trailing": true,
   "undef": true,
-  "unused": true,
-  "white": true,
+  "unused": true
 }
