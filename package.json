@@ -14,15 +14,14 @@
     "test": "mocha --check-leaks --recursive ./test/"
   },
   "dependencies": {
-    "convict": "0.2.3",
+    "convict": "~0.2.3",
     "ejs": "0.8.x",
     "express": "3.x",
     "i18n-abide": "~0.0.8",
-    "jwcrypto": "0.4.3",
+    "jwcrypto": "~0.4.3",
     "openid": "0.5.x"
   },
   "devDependencies": {
-    "mocha": "1.9.x",
-    "request": "2.21.0"
+    "mocha": "1.9.x"
   }
 }

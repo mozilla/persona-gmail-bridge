@@ -59,18 +59,29 @@ app.get('/.well-known/browserid', function (req, res) {
   });
 });
 
-app.get('/provision', function (req, res) {
-  res.render('provision');
-});
-
-app.post('/cert', function(req, res) {
+function getAuthedEmail(req) {
   var cookie = req.signedCookies.certify;
   var authedEmail = '';
-  var ttl = 1000 * 60 * 5; // invalidate signing cookies after 5 minutes
+  var ttl = config.get('ticketDuration');
   if (cookie && cookie.email && cookie.issued && (Date.now() - cookie.issued) < ttl) {
     authedEmail = cookie.email;
   }
-  var isCorrectEmail = compare(req.body.email, authedEmail);
+  return authedEmail;
+}
+
+app.get('/provision', function (req, res) {
+  var claimed = req.signedCookies.claimed;
+  // the authed email will have been normalized, but navigator.id should
+  // give us the claimed email again. As long we're sure the original
+  // claimed email normalizes to the authed email, we can proceed.
+  if (!compare(claimed, getAuthedEmail(req))) {
+    claimed = '';
+  }
+  res.render('provision', { certify: claimed });
+});
+
+app.post('/provision/certify', function(req, res) {
+  var isCorrectEmail = compare(req.body.email, getAuthedEmail(req));
 
   // trying to sign a cert? then kill this cookie while we're here.
   res.clearCookie('certify');
@@ -81,7 +92,7 @@ app.post('/cert', function(req, res) {
     cert.sign({
       privkey: privKey,
       hostname: config.get('issuer'),
-      duration: req.body.duration,
+      duration: Math.min(req.body.duration, config.get('certMaxDuration')),
       pubkey: req.body.pubkey,
       email: req.body.email // use user supplied email, not normalized email
     }, function onCert(err, cert) {
