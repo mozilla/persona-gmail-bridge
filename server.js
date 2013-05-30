@@ -52,6 +52,7 @@ app.use(caching.prevent([
   '/authenticate/verify'
 ]));
 
+/*jshint camelcase:false*/
 app.use(i18n.abide({
   supported_languages: config.get('localeList'),
   default_lang: config.get('localeDefault'),
@@ -79,7 +80,8 @@ function getAuthedEmail(req) {
   var cookie = req.signedCookies.certify;
   var authedEmail = '';
   var ttl = config.get('ticketDuration');
-  if (cookie && cookie.email && cookie.issued && (Date.now() - cookie.issued) < ttl) {
+  var now = Date.now();
+  if (cookie && cookie.email && cookie.issued && (now - cookie.issued) < ttl) {
     authedEmail = cookie.email;
   }
   return authedEmail;
@@ -112,7 +114,9 @@ app.post('/provision/certify', function(req, res) {
       pubkey: req.body.pubkey,
       email: req.body.email // use user supplied email, not normalized email
     }, function onCert(err, cert) {
-      if (err) return res.send(500, err);
+      if (err) {
+        return res.send(500, err);
+      }
 
       res.json({
         cert: cert
