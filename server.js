@@ -48,6 +48,7 @@ app.use(caching.revalidate([
 app.use(caching.prevent([
   '/__heartbeat__',
   '/provision',
+  '/provision/certify',
   '/authenticate/verify'
 ]));
 
