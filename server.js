@@ -40,9 +40,9 @@ app.use(express.json());
 app.use(clientSessions({
   cookieName: 'session',
   secret: config.get('secret'),
-  duration: config.get('ticketDuration'),
+  duration: config.get('sessionDuration'),
   cookie: {
-    maxAge: config.get('ticketDuration'),
+    maxAge: config.get('sessionDuration'),
     secure: url.parse(config.get('publicUrl')).protocol === 'https:'
   }
 }));
@@ -88,7 +88,7 @@ app.get('/.well-known/browserid', function (req, res) {
 function getAuthedEmail(req) {
   var certify = req.session.certify;
   var authedEmail = '';
-  var ttl = config.get('ticketDuration');
+  var ttl = config.get('sessionDuration');
   if (certify && certify.email && certify.issued && (Date.now() - certify.issued) < ttl) {
     authedEmail = certify.email;
   }
