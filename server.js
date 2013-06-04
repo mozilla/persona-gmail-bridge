@@ -85,29 +85,19 @@ app.get('/.well-known/browserid', function (req, res) {
   });
 });
 
-function getAuthedEmail(req) {
-  var certify = req.session.certify;
-  var authedEmail = '';
-  var ttl = config.get('sessionDuration');
-  if (certify && certify.email && certify.issued && (Date.now() - certify.issued) < ttl) {
-    authedEmail = certify.email;
-  }
-  return authedEmail;
-}
-
 app.get('/provision', function (req, res) {
   var claimed = req.session.claimed;
   // the authed email will have been normalized, but navigator.id should
   // give us the claimed email again. As long we're sure the original
   // claimed email normalizes to the authed email, we can proceed.
-  if (!compare(claimed, getAuthedEmail(req))) {
+  if (!compare(claimed, req.session.proven)) {
     claimed = '';
   }
   res.render('provision', { certify: claimed });
 });
 
 app.post('/provision/certify', function(req, res) {
-  var isCorrectEmail = compare(req.body.email, getAuthedEmail(req));
+  var isCorrectEmail = compare(req.body.email, req.session.proven);
 
   // trying to sign a cert? then kill this cookie while we're here.
   req.session.reset();
@@ -155,7 +145,7 @@ app.get('/authenticate/verify', function (req, res) {
       res.status(403).render('error',
         { title: req.gettext('Error'), info: error.message });
     } else if (compare(req.session.claimed, result.email)) {
-      req.session.certify = { email: result.email, issued: Date.now() };
+      req.session.proven = result.email;
       res.render('authenticate_finish',
         { title: req.gettext('Loading...'), success: true });
     } else {
