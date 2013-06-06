@@ -62,6 +62,7 @@ app.use(caching.prevent([
   '/authenticate/verify'
 ]));
 
+/*jshint camelcase:false*/
 app.use(i18n.abide({
   supported_languages: config.get('localeList'),
   default_lang: config.get('localeDefault'),
@@ -112,7 +113,9 @@ app.post('/provision/certify', function(req, res) {
       pubkey: req.body.pubkey,
       email: req.body.email // use user supplied email, not normalized email
     }, function onCert(err, cert) {
-      if (err) return res.send(500, err);
+      if (err) {
+        return res.send(500, err);
+      }
 
       res.json({
         cert: cert

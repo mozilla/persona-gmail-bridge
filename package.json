@@ -23,6 +23,8 @@
     "openid": "0.5.x"
   },
   "devDependencies": {
-    "mocha": "1.9.x"
+    "jshint": "~2.1.2",
+    "mocha": "1.9.x",
+    "walk": "~2.2.1"
   }
 }
