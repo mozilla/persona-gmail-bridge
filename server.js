@@ -47,6 +47,8 @@ app.use(clientSessions({
   }
 }));
 
+app.use(express.csrf());
+
 // No user-specific information. Localized or caching otherwise discouraged.
 app.use(caching.revalidate([
   '/.well-known/browserid',
@@ -94,7 +96,7 @@ app.get('/provision', function (req, res) {
   if (!compare(claimed, req.session.proven)) {
     claimed = '';
   }
-  res.render('provision', { certify: claimed });
+  res.render('provision', { certify: claimed, _csrf: req.session._csrf });
 });
 
 app.post('/provision/certify', function(req, res) {
