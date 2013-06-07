@@ -20,6 +20,7 @@
     "express": "3.x",
     "i18n-abide": "~0.0.8",
     "jwcrypto": "~0.4.3",
+    "node-statsd": "0.0.7",
     "openid": "0.5.x"
   },
   "devDependencies": {
