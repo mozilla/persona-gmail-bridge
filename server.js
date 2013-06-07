@@ -18,13 +18,14 @@ const clientSessions = require('client-sessions');
 const caching = require('./lib/caching');
 const compare = require('./lib/compare');
 const config = require('./lib/config');
+const logger = require('./lib/logging').logger;
 const cert = require('./lib/cert');
 const keys = require('./lib/keys');
 const statsd = require('./lib/statsd');
 
 // start loading, or make ephmeral keys if none exist
 keys(function() {
-  console.log('*** Keys loaded. ***');
+  logger.debug('*** Keys loaded. ***');
 });
 
 const openidRP = new openid.RelyingParty(
@@ -59,6 +60,14 @@ app.use(clientSessions({
 app.use(express.csrf());
 
 app.use(statsd.middleware());
+app.use(express.logger({
+  format: config.get('expressLogFormat'),
+  stream: {
+    write: function(x) {
+      logger.info(String(x).trim());
+    }
+  }
+}));
 
 // No user-specific information. Localized or caching otherwise discouraged.
 app.use(caching.revalidate([
