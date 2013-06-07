@@ -10,7 +10,7 @@
   "author": "Dan Callahan <dan.callahan@gmail.com>",
   "license": "MPL 2.0",
   "scripts": {
-    "start":  "node ./server.js",
+    "start":  "node ./server.js --shim",
     "test": "mocha --check-leaks --recursive ./test/"
   },
   "dependencies": {

@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+// commandline nonsense
+if (process.argv.indexOf('--shim') > -1) {
+  process.env.ISSUER_HOSTNAME = 'gmail.com';
+}
+
+
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
