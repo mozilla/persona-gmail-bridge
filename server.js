@@ -20,6 +20,7 @@ const compare = require('./lib/compare');
 const config = require('./lib/config');
 const cert = require('./lib/cert');
 const keys = require('./lib/keys');
+const statsd = require('./lib/statsd');
 
 // start loading, or make ephmeral keys if none exist
 keys(function() {
@@ -56,6 +57,8 @@ app.use(clientSessions({
 }));
 
 app.use(express.csrf());
+
+app.use(statsd.middleware());
 
 // No user-specific information. Localized or caching otherwise discouraged.
 app.use(caching.revalidate([
