@@ -27,6 +27,7 @@ const statsd = require('./lib/statsd');
 keys(function() {
   logger.debug('*** Keys loaded. ***');
 });
+logger.info('config: ' + config);
 
 const openidRP = new openid.RelyingParty(
   config.get('publicUrl') + '/authenticate/verify', // Verification URL
@@ -60,8 +61,13 @@ app.use(clientSessions({
 app.use(express.csrf());
 
 app.use(statsd.middleware());
+
+express.logger.token('path', function(req) {
+  return req.path;
+});
 app.use(express.logger({
-  format: config.get('expressLogFormat'),
+  format: ':remote-addr - - ":method :path HTTP/:http-version" :status ' +
+          ':response-time :res[content-length] ":referrer" ":user-agent"',
   stream: {
     write: function(x) {
       logger.info(String(x).trim());
@@ -182,7 +188,10 @@ app.get('/authenticate/verify', function (req, res) {
 });
 
 if (require.main === module) {
-  app.listen(config.get('port'), config.get('host'));
+  var server = app.listen(config.get('port'), config.get('host'), function() {
+    var addy = server.address();
+    logger.info("sideshow running on http://" + addy.address + ":" + addy.port);
+  });
 }
 
 module.exports = app;
