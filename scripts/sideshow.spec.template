@@ -1,0 +1,50 @@
+%define _rootdir /opt/browserid-bridge-gmail
+%define version __VERSION__
+
+Name:          browserid-bridge-gmail
+Version:       %{version}
+Release:       1%{?dist}
+Summary:       BrowserID Identity Bridge for Gmail
+Packager:      Sean McArthur <smcarthur@mozilla.com>
+Group:         Development/Libraries
+License:       MPL 2.0
+URL:           https://github.com/callahad/sideshow
+BuildRoot:     %{_tmppath}/%{name}-%{version}-%{release}-root
+AutoReqProv:   no
+Requires:      openssl, nodejs >= 0.8.17
+BuildRequires: gcc-c++, git, jre, make, npm, openssl-devel, expat-devel, nodejs >= 0.8.17
+Source:        sideshow-%{version}.tar.gz
+
+%description
+sideshow: BrowserID Bridging to Google.
+
+%prep
+%setup -q -c
+
+%build
+npm install
+export PATH=$PWD/node_modules/.bin:$PATH
+#mkdir -p static/i18n/en_US
+#compile-json locale/ static/i18n/
+#env CONFIG_FILES=$PWD/server/config/production.json scripts/compress
+echo "$GIT_REVISION" > static/ver.txt
+#echo "locale svn r$SVN_REVISION" >> static/ver.txt
+
+%install
+rm -rf %{buildroot}
+mkdir -p %{buildroot}%{_rootdir}
+for f in bin lib static views; do
+    cp -rp $f %{buildroot}%{_rootdir}/
+done
+mkdir -p %{buildroot}%{_rootdir}/config
+#cp -p server/config/l10n-all.json %{buildroot}%{_rootdir}/config
+#cp -p server/config/l10n-prod.json %{buildroot}%{_rootdir}/config
+# now let's link en to en-US
+#ln -s en-US %{buildroot}%{_rootdir}/static/i18n/en
+
+%clean
+rm -rf %{buildroot}
+
+%files
+%defattr(-,root,root,-)
+%{_rootdir}
