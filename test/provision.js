@@ -7,7 +7,7 @@ const sideshow = require('../server');
 const mockid = require('./lib/mockid');
 
 const BASE_URL = 'http://localhost:3033';
-const TEST_EMAIL = 'test.does.not.exist.for.sure@gmail.com';
+const TEST_EMAIL = 'hikingfan@gmail.com';
 
 /* globals describe, before, after, it */
 
@@ -15,7 +15,7 @@ describe('server', function() {
 
   var server;
   sideshow.setOpenIDRP(mockid({
-    url: 'http://does.not.exist',
+    url: 'http://openid.example',
     result: {
       authenticated: true,
       email: TEST_EMAIL
@@ -34,7 +34,7 @@ describe('server', function() {
   });
 
   describe('provisioning', function() {
-  
+
     it('should forward to auth url', function(done) {
       request.get({
         url: BASE_URL + '/authenticate/forward?email=' + TEST_EMAIL,
@@ -42,7 +42,7 @@ describe('server', function() {
       }, function(err, res, body) {
         assert.ifError(err);
         assert.equal(res.statusCode, 302);
-        assert.equal(res.headers.location, 'http://does.not.exist');
+        assert.equal(res.headers.location, 'http://openid.example');
         done();
       });
     });
@@ -86,7 +86,7 @@ describe('server', function() {
         done();
       });
     });
-  
+
   });
 
 
