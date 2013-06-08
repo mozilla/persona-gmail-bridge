@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "client-sessions": "~0.3.0",
-    "convict": "~0.3.0",
+    "convict": "~0.3.2",
     "ejs": "0.8.x",
     "express": "3.x",
     "i18n-abide": "~0.0.8",
