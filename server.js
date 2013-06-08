@@ -27,7 +27,6 @@ const statsd = require('./lib/statsd');
 keys(function() {
   logger.debug('*** Keys loaded. ***');
 });
-logger.info('config: ' + config);
 
 const openidRP = new openid.RelyingParty(
   config.get('publicUrl') + '/authenticate/verify', // Verification URL
