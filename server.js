@@ -26,7 +26,7 @@ keys(function() {
   console.log('*** Keys loaded. ***');
 });
 
-const openidRP = new openid.RelyingParty(
+var openidRP = new openid.RelyingParty(
   config.get('publicUrl') + '/authenticate/verify', // Verification URL
   null, // Realm
   true, // Use stateless verification
@@ -111,7 +111,7 @@ app.post('/provision/certify', function(req, res) {
   var isCorrectEmail = compare(req.body.email, req.session.proven);
 
   // trying to sign a cert? then kill this cookie while we're here.
-  req.session.reset();
+  req.session.reset(['_csrf']);
   if (!isCorrectEmail) {
     return res.send(401, "Email isn't verified.");
   }
@@ -174,4 +174,9 @@ if (require.main === module) {
 }
 
 module.exports = app;
+
+// expose openidRP so we can mock in tests
+app.setOpenIDRP = function setOpenIDRP(rp) {
+  openidRP = rp;
+};
 

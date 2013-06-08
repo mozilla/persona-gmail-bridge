@@ -11,7 +11,7 @@
   "license": "MPL 2.0",
   "scripts": {
     "start":  "node ./server.js --shim",
-    "test": "mocha --check-leaks --recursive ./test/"
+    "test": "mocha --check-leaks --globals sPaddedMessageHex"
   },
   "dependencies": {
     "client-sessions": "~0.3.0",
@@ -26,6 +26,7 @@
     "awsbox": "0.4.x",
     "jshint": "~2.1.2",
     "mocha": "1.9.x",
+    "request": "2.x",
     "walk": "~2.2.1"
   }
 }
