@@ -27,7 +27,8 @@ describe('HTTP Endpoints', function () {
     var body;
 
     before(function (done) {
-      request.get(BASE_URL + '/__heartbeat__', function (err, _res, _body) {
+      var url = BASE_URL + '/__heartbeat__';
+      request.get(url, function (err, _res, _body) {
         res = _res;
         body = _body;
         done(err);
@@ -48,7 +49,8 @@ describe('HTTP Endpoints', function () {
     var body;
 
     before(function (done) {
-      request.get(BASE_URL + '/.well-known/browserid', function (err, _res, _body) {
+      var url = BASE_URL + '/.well-known/browserid';
+      request.get(url, function (err, _res, _body) {
         res = _res;
         body = _body;
         done(err);
