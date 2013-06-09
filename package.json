@@ -29,6 +29,6 @@
     "jshint": "~2.1.2",
     "mocha": "1.9.x",
     "request": "2.x",
-    "walk": "~2.2.1"
+    "walkdir": "~0.0.7"
   }
 }

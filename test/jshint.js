@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-// jshinting (syntax checking) of the source
+/* global describe, it */
 
 const fs = require('fs');
 const path = require('path');
@@ -10,68 +10,35 @@ const util = require('util');
 const assert = require('assert');
 
 const jshint = require('jshint').JSHINT;
-const walk = require('walk');
+const walk = require('walkdir');
 
-function jshintFormatter(errors) {
-  return errors.map(function(e) {
-    return e.error.reason + ' ' + e.file + ':' + e.error.line;
-  });
+function format(errs) {
+  return errs.map(function (e) { return e.line + ': ' + e.reason; }).join('\n');
 }
 
-describe('jshint', function() {
-  // read jshintrc
-  var jshintrc;
+describe('JSHint', function () {
+  var rcPath = path.join(__dirname, '..', '.jshintrc');
+  var rcFile = fs.readFileSync(rcPath, 'utf8');
+  var configuration = JSON.parse(rcFile);
 
-  it('.jshintrc should be readable', function() {
-    jshintrc = JSON.parse(fs.readFileSync(path.join(__dirname, '../.jshintrc')).toString());
-    assert(Object.prototype.toString.call(jshintrc), '[object Object]');
-  });
+  var commonPath = path.join(__dirname, '..');
 
-  var filesToLint = [
-    path.join(__dirname, '../server.js')
-  ];
+  var files = Array.prototype.concat(
+    path.join(__dirname, '..', 'server.js'),
+    walk.sync(path.join(__dirname, '..', 'lib')),
+    walk.sync(path.join(__dirname, '..', 'scripts')),
+    walk.sync(path.join(__dirname, '..', 'test'))
+  );
 
-  it('we should be able to discover files to lint', function(done) {
-    var walker = walk.walkSync(path.join(__dirname, '../lib'), {});
+  files = files.filter( function(file) { return (/\.js$/).test(file); } );
 
-    walker.on("file", function(root, fStat, next) {
-      var f = path.join(root, fStat.name);
-      if (/\.js$/.test(f)) {
-        filesToLint.push(f);
+  files.forEach(function (file) {
+    var relativeName = file.substring(commonPath.length);
+    it(relativeName + ' should pass', function () {
+      var source = fs.readFileSync(file, 'utf8');
+      if (!jshint(source, configuration)) {
+        throw new Error('JSHint failed.\n' + format(jshint.errors));
       }
-      next();
     });
-    walker.on("end", done);
-  });
-
-  it('syntax checking should yield no errors', function(done) {
-    var errors = [];
-
-    function checkNext() {
-      if (!filesToLint.length) {
-        if (errors.length) {
-          var buf = util.format("\n        %d errors:\n        * ",
-                                errors.length);
-          buf += errors.join("\n        * ");
-          done(new Error(buf));
-        } else {
-          done(null);
-        }
-        return;
-      }
-      var f = filesToLint.shift();
-      fs.readFile(f.toString(), function(err, data) {
-        // now
-        f = path.relative(process.cwd(), f);
-        if (!jshint(data.toString(), jshintrc)) {
-          jshint.errors.forEach(function(e) {
-            errors.push(util.format("%s %s:%d - %s", e.id, f, e.line, e.reason));
-          });
-        }
-        checkNext();
-      });
-    }
-    checkNext();
   });
 });
-
