@@ -3,7 +3,7 @@ const assert = require('assert');
 const jwcrypto = require('jwcrypto');
 const request = require('request');
 
-const sideshow = require('../server');
+const app = require('../server');
 const mockid = require('./lib/mockid');
 
 const BASE_URL = 'http://localhost:3033';
@@ -11,6 +11,94 @@ const TEST_EMAIL = 'hikingfan@gmail.com';
 
 /* globals describe, before, after, it */
 
+describe('HTTP Endpoints', function () {
+  var server;
+
+  before(function (done) {
+    server = app.listen(3033, undefined, undefined, function () { done(); });
+  });
+
+  after(function (done) {
+    server.close(function () { done(); });
+  });
+
+  describe('/__heartbeat__', function () {
+    var res;
+    var body;
+
+    before(function (done) {
+      request.get(BASE_URL + '/__heartbeat__', function (err, _res, _body) {
+        res = _res;
+        body = _body;
+        done(err);
+      });
+    });
+
+    it('should respond to GET', function () {
+      assert.equal(res.statusCode, 200);
+    });
+
+    it('should have an "ok" body', function () {
+      assert.equal(body, 'ok');
+    });
+  });
+
+  describe('/.well-known/browserid', function () {
+    var res;
+    var body;
+
+    before(function (done) {
+      request.get(BASE_URL + '/.well-known/browserid', function (err, _res, _body) {
+        res = _res;
+        body = _body;
+        done(err);
+      });
+    });
+
+    it('should respond to GET', function () {
+      assert.equal(res.statusCode, 200);
+    });
+
+    it('should use application/json', function () {
+      var contentType = res.headers['content-type'].split(';')[0];
+      assert.equal(contentType, 'application/json');
+    });
+
+    it('should be valid JSON', function () {
+      assert.doesNotThrow(function () { JSON.parse(body); });
+    });
+
+    it('should contain all necessary parameters', function () {
+      var doc = JSON.parse(body);
+      assert.equal(doc.authentication, '/authenticate');
+      assert.equal(doc.provisioning, '/provision');
+      assert('public-key' in doc);
+    });
+
+    it('should contain a valid public key', function () {
+      var doc = JSON.parse(body);
+      var pubKey = JSON.stringify(doc['public-key']);
+      assert(jwcrypto.loadPublicKey(pubKey));
+    });
+  });
+
+  describe('/provision', function () {
+  });
+
+  describe('/provision/certify', function () {
+  });
+
+  describe('/authenticate', function () {
+  });
+
+  describe('/authenticate/forward', function () {
+  });
+
+  describe('/authenticate/verify', function () {
+  });
+});
+
+/*
 describe('server', function() {
 
   var server;
@@ -95,3 +183,4 @@ describe('server', function() {
   });
 
 });
+*/
