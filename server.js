@@ -17,6 +17,10 @@ const cert = require('./lib/cert');
 const keys = require('./lib/keys');
 const statsd = require('./lib/statsd');
 
+if (config.get('secret') === config.default('secret')) {
+  logger.warn('*** Using ephemeral secret for signing cookies. ***');
+}
+
 // start loading, or make ephmeral keys if none exist
 keys(function() {
   logger.debug('*** Keys loaded. ***');
