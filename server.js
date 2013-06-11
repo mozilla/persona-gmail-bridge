@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// jshint camelcase:false
 
 const path = require('path');
 const fs = require('fs');
@@ -17,6 +18,7 @@ const cert = require('./lib/cert');
 const keys = require('./lib/keys');
 const statsd = require('./lib/statsd');
 
+const IS_SECURE = url.parse(config.get('publicUrl')).protocol === 'https:';
 if (config.get('secret') === config.default('secret')) {
   logger.warn('*** Using ephemeral secret for signing cookies. ***');
 }
@@ -40,10 +42,27 @@ const googleEndpoint = 'https://www.google.com/accounts/o8/id';
 
 const app = express();
 
+// -- Express Configuration --
+
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
-app.use('/static', express.static('static'));
+
+app.locals.personaUrl = config.get('personaUrl');
+app.locals.errorInfo = undefined;
+
+// -- Express Middleware --
+
+app.use(statsd.middleware());
 app.use(express.json());
+
+if (IS_SECURE) {
+  app.use(function(req, res, next) {
+    req.connection.proxySecure = true;
+    res.setHeader('Strict-Transport-Security',
+        'max-age=1088640; includeSubdomains');
+    next();
+  });
+}
 
 app.use(clientSessions({
   cookieName: 'session',
@@ -51,13 +70,11 @@ app.use(clientSessions({
   duration: config.get('sessionDuration'),
   cookie: {
     maxAge: config.get('sessionDuration'),
-    secure: url.parse(config.get('publicUrl')).protocol === 'https:'
+    secure: IS_SECURE
   }
 }));
 
 app.use(express.csrf());
-
-app.use(statsd.middleware());
 
 express.logger.token('path', function(req) {
   return req.path;
@@ -87,7 +104,6 @@ app.use(caching.prevent([
   '/authenticate/verify'
 ]));
 
-/*jshint camelcase:false*/
 app.use(i18n.abide({
   supported_languages: config.get('localeList'),
   default_lang: config.get('localeDefault'),
@@ -95,8 +111,7 @@ app.use(i18n.abide({
   translation_directory: config.get('localePath')
 }));
 
-app.locals.personaUrl = config.get('personaUrl');
-app.locals.errorInfo = undefined;
+// -- Express Routes --
 
 app.get('/__heartbeat__', function (req, res) {
   res.send('ok');
@@ -184,6 +199,10 @@ app.get('/authenticate/verify', function (req, res) {
     }
   });
 });
+
+app.use('/static', express.static('static'));
+
+// -- Module Setup --
 
 if (require.main === module) {
   var server = app.listen(config.get('port'), config.get('host'), function() {
