@@ -197,4 +197,3 @@ module.exports = app;
 app.setOpenIDRP = function setOpenIDRP(rp) {
   openidRP = rp;
 };
-
