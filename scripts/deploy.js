@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+/* jshint sub:true, camelcase: false */
+
 var path = require('path'),
 child_process = require('child_process');
 
@@ -14,7 +16,7 @@ if (!process.env['AWS_ID'] || ! process.env['AWS_SECRET']) {
   process.exit(1);
 }
 
-if (!process.env['ZERIGO_DNS_KEY'] && process.env['PERSONA_DEPLOY_DNS_KEY']) { 
+if (!process.env['ZERIGO_DNS_KEY'] && process.env['PERSONA_DEPLOY_DNS_KEY']) {
   process.env['ZERIGO_DNS_KEY'] = process.env['PERSONA_DEPLOY_DNS_KEY'];
 }
 
@@ -22,12 +24,12 @@ var cmd = path.join(__dirname, '..', 'node_modules', '.bin', 'awsbox');
 cmd = path.relative(process.env['PWD'], cmd);
 
 if (process.argv.length > 1 &&
-    process.argv[2] === 'create' || 
+    process.argv[2] === 'create' ||
     process.argv[2] === 'deploy')
 {
   var options = {};
 
-  if (process.argv.length > 3) options.n = process.argv[3];
+  if (process.argv.length > 3) { options.n = process.argv[3]; }
 
   if (process.env['PERSONA_SSL_PRIV'] || process.env['PERSONA_SSL_PUB']) {
     options.p = process.env['PERSONA_SSL_PUB'];
@@ -75,9 +77,8 @@ if (process.argv.length > 1 &&
 
 console.log("awsbox cmd: " + cmd);
 var cp = child_process.exec(cmd, function(err) {
-  if (err) process.exit(err.code);
-  else process.exit(0);
+  if (err) { process.exit(err.code); }
+  else { process.exit(0); }
 });
 cp.stdout.pipe(process.stdout);
 cp.stderr.pipe(process.stderr);
-
