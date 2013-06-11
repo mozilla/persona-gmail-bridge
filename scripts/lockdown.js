@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-if (process.env['NPM_LOCKDOWN_RUNNING']) process.exit(0);
+/* jshint sub:true, maxlen:120 */
+
+if (process.env['NPM_LOCKDOWN_RUNNING']) { process.exit(0); }
 
 console.log("NPM Lockdown is here to check your dependencies!  Never fear!");
 
@@ -26,7 +28,7 @@ var errors = [];
 var warn = [];
 
 function rewriteURL(u) {
-    return u.replace('registry.npmjs.org', '127.0.0.1:' + boundPort);
+  return u.replace('registry.npmjs.org', '127.0.0.1:' + boundPort);
 }
 
 function packageOk(name, ver, sha, required) {
@@ -48,15 +50,13 @@ function packageOk(name, ver, sha, required) {
   var wantSHA = lockdownJson[name][ver];
   if (wantSHA !== '*' && wantSHA !== sha) {
     if (required) {
-      errors.push("package " + name + "@" + ver + " has a different checksum (" +
-                  wantSHA + " v. " + sha + ")");
+      errors.push("package " + name + "@" + ver + " has a different checksum (" + wantSHA + " v. " + sha + ")");
     }
     return false;
   }
 
   if (wantSHA === '*') {
-    warn.push("Lockdown cannot guarantee your saftey!  No sha for pkg " + name + "@" + ver +
-              " in lockdown.json");
+    warn.push("Lockdown cannot guarantee your saftey!  No sha for pkg " + name + "@" + ver + " in lockdown.json");
   }
 
   return true;
@@ -64,18 +64,18 @@ function packageOk(name, ver, sha, required) {
 
 
 function rewriteVersionMD(json) {
-  if (typeof json === 'string') json = JSON.parse(json);
+  if (typeof json === 'string') { json = JSON.parse(json); }
   if (!json.error) {
     json.dist.tarball = rewriteURL(json.dist.tarball);
 
     // is the name/version/sha in our lockdown.json?
-    if (!packageOk(json.name, json.version, json.dist.shasum, true)) return null;
+    if (!packageOk(json.name, json.version, json.dist.shasum, true)) { return null; }
   }
   return JSON.stringify(json);
 }
 
 function rewritePackageMD(json) {
-  if (typeof json === 'string') json = JSON.parse(json);
+  if (typeof json === 'string') { json = JSON.parse(json); }
   if (!json.error) {
     Object.keys(json.versions).forEach(function(ver) {
       var data = json.versions[ver];
@@ -138,12 +138,12 @@ var server = http.createServer(function (req, res) {
     agent: false
   }, function(rres) {
     res.setHeader('Content-Type', rres.headers['content-type']);
-    if (type === 'tarball') res.setHeader('Content-Length', rres.headers['content-length']);
+    if (type === 'tarball') { res.setHeader('Content-Length', rres.headers['content-length']); }
     var b = "";
     rres.on('data', function(d) {
       hash.update(d);
-      if (type != 'tarball') b += d;
-      else res.write(d);
+      if (type !== 'tarball') { b += d; }
+      else { res.write(d); }
     });
     rres.on('end', function() {
       if (type === 'tarball') {
