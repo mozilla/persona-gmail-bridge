@@ -100,8 +100,66 @@ describe('HTTP Endpoints', function () {
 
   describe('/provision/certify', function () {
     var url = BASE_URL + '/provision/certify';
-    url; // Make JSHint shut up for the moment...
-    it('should have tests');
+    describe('well-formed requests', function () {
+      var pubkey;
+      var csrf;
+
+      before(function (done) {
+        // Generate a public key for the signing request
+        var keyOpts = { algorithm: 'RS', keysize: 64 };
+        jwcrypto.generateKeypair(keyOpts, function (err, keypair) {
+          pubkey = keypair.publicKey.serialize();
+          done(err);
+        });
+      });
+
+      before(function (done) {
+        // Get a claim cookie
+        var options = {
+          qs: { email: 'hikingfan@gmail.com' },
+          followRedirect: false
+        };
+        var url = BASE_URL + '/authenticate/forward';
+        request.get(url, options, function (err) {
+          done(err);
+        });
+      });
+
+      before(function (done) {
+        // Get a certify cookie
+        var url = BASE_URL + '/authenticate/verify';
+        request.get(url, function (err) { done(err); });
+      });
+
+      before(function (done) {
+        // Get a CSRF token for the request
+        request.get(BASE_URL + '/provision', function(err, res, body) {
+          var re = /<input type="hidden" id="csrf" value="([^"]+)"\/>/;
+          csrf = body.match(re)[1];
+          done(err);
+        });
+      });
+
+      it('should have a csrf token', function () {
+        assert(csrf);
+      });
+
+      it('should sign certificates', function (done) {
+        var options = {
+          headers: { 'X-CSRF-Token': csrf },
+          json: { email: TEST_EMAIL, pubkey: pubkey, duration: 5 * 60 * 1000 }
+        };
+
+        request.post(url, options, function(err, res, body) {
+          assert(body.cert);
+          done(err);
+        });
+      });
+    });
+
+    describe('malformed requests', function () {
+      it('should have tests');
+    });
   });
 
   describe('/authenticate', function () {
@@ -171,48 +229,3 @@ describe('HTTP Endpoints', function () {
     it('should have tests');
   });
 });
-
-/*
-var pubkey;
-before(function(done) {
-  jwcrypto.generateKeypair({
-    algorithm: 'RS',
-    keysize: 64
-  }, function(err, pair) {
-    pubkey = pair.publicKey.serialize();
-    server = sideshow.listen(3033, done);
-  });
-});
-
-var csrf;
-it('should get a csrf token', function(done) {
-  request.get(BASE_URL + '/provision', function(err, res, body) {
-    // please forgive me Cthulu
-    var re = /<input type="hidden" id="csrf" value="([^"]+)"\/>/;
-    csrf = body.match(re)[1];
-
-    assert(csrf);
-
-    done();
-  });
-});
-
-it('should sign a certificate', function(done) {
-  request.post({
-    url: BASE_URL + '/provision/certify',
-    headers: {
-     'X-CSRF-Token': csrf
-    },
-    json: {
-      email: TEST_EMAIL,
-      pubkey: pubkey,
-      duration: 1000 * 60 * 5
-    }
-  }, function(err, res, body) {
-    assert.ifError(err);
-    assert(body.cert);
-    assert.equal(body.cert.split('.').length, 3);
-    done();
-  });
-});
-*/
