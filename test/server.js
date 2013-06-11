@@ -136,7 +136,7 @@ describe('HTTP Endpoints', function () {
         };
 
         request.post(url, options, function(err, res, body) {
-          assert(body.cert);
+          assert(jwcrypto.extractComponents(body.cert));
           done(err);
         });
       });
