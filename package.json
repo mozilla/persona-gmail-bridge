@@ -10,12 +10,12 @@
   "author": "Dan Callahan <dan.callahan@gmail.com>",
   "license": "MPL 2.0",
   "scripts": {
-    "start":  "node ./server.js --shim",
+    "start":  "node ./server.js --issuer=gmail.com",
     "test": "mocha --check-leaks --globals sPaddedMessageHex"
   },
   "dependencies": {
     "client-sessions": "~0.3.0",
-    "convict": "~0.2.3",
+    "convict": "~0.3.2",
     "ejs": "0.8.x",
     "express": "3.x",
     "i18n-abide": "~0.0.8",

@@ -1,11 +1,5 @@
 #!/usr/bin/env node
 
-// commandline nonsense
-if (process.argv.indexOf('--shim') > -1) {
-  process.env.ISSUER_HOSTNAME = 'gmail.com';
-}
-
-
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
@@ -22,6 +16,10 @@ const logger = require('./lib/logging').logger;
 const cert = require('./lib/cert');
 const keys = require('./lib/keys');
 const statsd = require('./lib/statsd');
+
+if (config.get('secret') === config.default('secret')) {
+  logger.warn('*** Using ephemeral secret for signing cookies. ***');
+}
 
 // start loading, or make ephmeral keys if none exist
 keys(function() {
