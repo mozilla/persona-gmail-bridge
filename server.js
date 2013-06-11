@@ -26,7 +26,7 @@ keys(function() {
   logger.debug('*** Keys loaded. ***');
 });
 
-const openidRP = new openid.RelyingParty(
+var openidRP = new openid.RelyingParty(
   config.get('publicUrl') + '/authenticate/verify', // Verification URL
   null, // Realm
   true, // Use stateless verification
@@ -96,6 +96,7 @@ app.use(i18n.abide({
 }));
 
 app.locals.personaUrl = config.get('personaUrl');
+app.locals.errorInfo = undefined;
 
 app.get('/__heartbeat__', function (req, res) {
   res.send('ok');
@@ -126,7 +127,7 @@ app.post('/provision/certify', function(req, res) {
   var isCorrectEmail = compare(req.body.email, req.session.proven);
 
   // trying to sign a cert? then kill this cookie while we're here.
-  req.session.reset();
+  req.session.reset(['_csrf']);
   if (!isCorrectEmail) {
     return res.send(401, "Email isn't verified.");
   }
@@ -171,7 +172,7 @@ app.get('/authenticate/verify', function (req, res) {
         { title: req.gettext('Loading...'), success: false });
     } else if (error || !result.authenticated || !result.email) {
       res.status(403).render('error',
-        { title: req.gettext('Error'), info: error.message });
+        { title: req.gettext('Error'), errorInfo: error.message });
     } else if (compare(req.session.claimed, result.email)) {
       req.session.proven = result.email;
       res.render('authenticate_finish',
@@ -193,3 +194,7 @@ if (require.main === module) {
 
 module.exports = app;
 
+// expose openidRP so we can mock in tests
+app.setOpenIDRP = function setOpenIDRP(rp) {
+  openidRP = rp;
+};
