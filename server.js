@@ -96,6 +96,7 @@ app.use(i18n.abide({
 }));
 
 app.locals.personaUrl = config.get('personaUrl');
+app.locals.errorInfo = undefined;
 
 app.get('/__heartbeat__', function (req, res) {
   res.send('ok');
@@ -171,7 +172,7 @@ app.get('/authenticate/verify', function (req, res) {
         { title: req.gettext('Loading...'), success: false });
     } else if (error || !result.authenticated || !result.email) {
       res.status(403).render('error',
-        { title: req.gettext('Error'), info: error.message });
+        { title: req.gettext('Error'), errorInfo: error.message });
     } else if (compare(req.session.claimed, result.email)) {
       req.session.proven = result.email;
       res.render('authenticate_finish',
