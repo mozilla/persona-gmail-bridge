@@ -1,9 +1,11 @@
 const assert = require('assert');
 
+const clientSessions = require('client-sessions');
 const jwcrypto = require('jwcrypto');
 const request = require('request');
 
 const app = require('../server');
+const config = require('../lib/config');
 const mockid = require('./lib/mockid');
 
 const BASE_URL = 'http://localhost:3033';
@@ -102,7 +104,6 @@ describe('HTTP Endpoints', function () {
     var url = BASE_URL + '/provision/certify';
     describe('well-formed requests', function () {
       var pubkey;
-      var csrf;
 
       before(function (done) {
         // Generate a public key for the signing request
@@ -113,41 +114,25 @@ describe('HTTP Endpoints', function () {
         });
       });
 
-      before(function (done) {
-        // Get a claim cookie
-        var options = {
-          qs: { email: 'hikingfan@gmail.com' },
-          followRedirect: false
+      var cookie;
+      before(function () {
+        // Forge a session cookie
+        var cookieOptions = {
+          cookieName: 'session',
+          secret: config.get('secret')
         };
-        var url = BASE_URL + '/authenticate/forward';
-        request.get(url, options, function (err) {
-          done(err);
-        });
-      });
+        var cookieContents = { _csrf: 'foo', proven: TEST_EMAIL };
 
-      before(function (done) {
-        // Get a certify cookie
-        var url = BASE_URL + '/authenticate/verify';
-        request.get(url, function (err) { done(err); });
-      });
-
-      before(function (done) {
-        // Get a CSRF token for the request
-        request.get(BASE_URL + '/provision', function(err, res, body) {
-          var re = /<input type="hidden" id="csrf" value="([^"]+)"\/>/;
-          csrf = body.match(re)[1];
-          done(err);
-        });
-      });
-
-      it('should have a csrf token', function () {
-        assert(csrf);
+        cookie = clientSessions.util.encode(cookieOptions, cookieContents);
       });
 
       it('should sign certificates', function (done) {
+        var jar = request.jar();
+        jar.add(request.cookie('session=' + cookie));
         var options = {
-          headers: { 'X-CSRF-Token': csrf },
-          json: { email: TEST_EMAIL, pubkey: pubkey, duration: 5 * 60 * 1000 }
+          headers: { 'X-CSRF-Token': 'foo' },
+          json: { email: TEST_EMAIL, pubkey: pubkey, duration: 5 * 60 * 1000 },
+          jar: jar
         };
 
         request.post(url, options, function(err, res, body) {
@@ -197,7 +182,7 @@ describe('HTTP Endpoints', function () {
     });
 
     describe('malformed requests', function () {
-      it('should fail on GET for non-google addresses', function (done) {
+      it.skip('should fail on GET for non-google addresses', function (done) {
         var options = {
           qs: { email: 'hikingfan@example.invalid' },
           followRedirect: false
