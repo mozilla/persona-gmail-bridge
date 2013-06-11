@@ -17,6 +17,7 @@ const cert = require('./lib/cert');
 const keys = require('./lib/keys');
 const statsd = require('./lib/statsd');
 
+const IS_SECURE = url.parse(config.get('publicUrl')).protocol === 'https:';
 if (config.get('secret') === config.default('secret')) {
   logger.warn('*** Using ephemeral secret for signing cookies. ***');
 }
@@ -40,10 +41,19 @@ const googleEndpoint = 'https://www.google.com/accounts/o8/id';
 
 const app = express();
 
+app.use(statsd.middleware());
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
-app.use('/static', express.static('static'));
 app.use(express.json());
+
+if (IS_SECURE) {
+  app.use(function(req, res, next) {
+    req.connection.proxySecure = true;
+    res.setHeader('Strict-Transport-Security',
+        'max-age=1088640; includeSubdomains');
+    next();
+  });
+}
 
 app.use(clientSessions({
   cookieName: 'session',
@@ -51,13 +61,11 @@ app.use(clientSessions({
   duration: config.get('sessionDuration'),
   cookie: {
     maxAge: config.get('sessionDuration'),
-    secure: url.parse(config.get('publicUrl')).protocol === 'https:'
+    secure: IS_SECURE
   }
 }));
 
 app.use(express.csrf());
-
-app.use(statsd.middleware());
 
 express.logger.token('path', function(req) {
   return req.path;
@@ -184,6 +192,8 @@ app.get('/authenticate/verify', function (req, res) {
     }
   });
 });
+
+app.use('/static', express.static('static'));
 
 if (require.main === module) {
   var server = app.listen(config.get('port'), config.get('host'), function() {
