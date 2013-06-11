@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// jshint camelcase:false
 
 const path = require('path');
 const fs = require('fs');
@@ -41,9 +42,17 @@ const googleEndpoint = 'https://www.google.com/accounts/o8/id';
 
 const app = express();
 
-app.use(statsd.middleware());
+// -- Express Configuration --
+
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
+
+app.locals.personaUrl = config.get('personaUrl');
+app.locals.errorInfo = undefined;
+
+// -- Express Middleware --
+
+app.use(statsd.middleware());
 app.use(express.json());
 
 if (IS_SECURE) {
@@ -95,7 +104,6 @@ app.use(caching.prevent([
   '/authenticate/verify'
 ]));
 
-/*jshint camelcase:false*/
 app.use(i18n.abide({
   supported_languages: config.get('localeList'),
   default_lang: config.get('localeDefault'),
@@ -103,8 +111,7 @@ app.use(i18n.abide({
   translation_directory: config.get('localePath')
 }));
 
-app.locals.personaUrl = config.get('personaUrl');
-app.locals.errorInfo = undefined;
+// -- Express Routes --
 
 app.get('/__heartbeat__', function (req, res) {
   res.send('ok');
@@ -194,6 +201,8 @@ app.get('/authenticate/verify', function (req, res) {
 });
 
 app.use('/static', express.static('static'));
+
+// -- Module Setup --
 
 if (require.main === module) {
   var server = app.listen(config.get('port'), config.get('host'), function() {
