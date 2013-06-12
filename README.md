@@ -23,6 +23,13 @@ You're done!
 
 Visit http://127.0.0.1:10001/ and try signing in with your Gmail account!
 
+Testing
+-------
+
+1. `LOG_PATH=/dev/null npm test`
+
+You're done!
+
 Configuration
 -------------
 
@@ -48,4 +55,27 @@ To route these requests through a proxy, set the following environment variables
 - `HTTP_PROXY_HOST` and `HTTP_PROXY_PORT` control how `http://` requests are sent
 - `HTTPS_PROXY_HOST` and `HTTPS_PROXY_PORT` control how `https://` requests are sent
 
+StatsD
+------
 
+By default, Sideshow reports statistics via [statsd](https://github.com/etsy/statsd):
+
+### Counters
+
+`authentication.forwarding.success`
+`authentication.forwarding.failure`
+
+`authentication.openid.success`
+`authentication.openid.failure.cancelled`
+`authentication.openid.failure.bad_request`
+`authentication.openid.failure.mismatch`
+
+`certification.success`
+`certification.failure.no_proof`
+`certification.failure.signing_error`
+
+`response_code.{code}` -- on every response
+
+### Timers
+
+`routes.{path}.{method}` -- on every request
