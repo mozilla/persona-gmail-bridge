@@ -144,6 +144,7 @@ app.post('/provision/certify', function(req, res) {
   // trying to sign a cert? then kill this cookie while we're here.
   req.session.reset(['_csrf']);
   if (!isCorrectEmail) {
+    statsd.increment('certification.failure.no_proof');
     return res.send(401, "Email isn't verified.");
   }
   keys(function(pubKey, privKey) {
@@ -155,9 +156,11 @@ app.post('/provision/certify', function(req, res) {
       email: req.body.email // use user supplied email, not normalized email
     }, function onCert(err, cert) {
       if (err) {
+        statsd.increment('certification.failure.signing_error');
         return res.send(500, err);
       }
 
+      statsd.increment('certification.success');
       res.json({
         cert: cert
       });
@@ -172,8 +175,10 @@ app.get('/authenticate', function (req, res) {
 app.get('/authenticate/forward', function (req, res) {
   openidRP.authenticate(googleEndpoint, false, function (error, authUrl) {
     if (error || !authUrl || !req.query.email) {
+      statsd.increment('authentication.forwarding.failure');
       res.status(500).render('error', { title: req.gettext('Error') });
     } else {
+      statsd.increment('authentication.forwarding.success');
       req.session.claimed = req.query.email;
       res.redirect(authUrl);
     }
@@ -183,16 +188,20 @@ app.get('/authenticate/forward', function (req, res) {
 app.get('/authenticate/verify', function (req, res) {
   openidRP.verifyAssertion(req, function (error, result) {
     if (error && error.message === 'Authentication cancelled') {
+      statsd.increment('authentication.openid.failure.cancelled');
       res.render('authenticate_finish',
         { title: req.gettext('Loading...'), success: false });
     } else if (error || !result.authenticated || !result.email) {
+      statsd.increment('authentication.openid.failure.bad_result');
       res.status(403).render('error',
         { title: req.gettext('Error'), errorInfo: error.message });
     } else if (compare(req.session.claimed, result.email)) {
+      statsd.increment('authentication.openid.success');
       req.session.proven = result.email;
       res.render('authenticate_finish',
         { title: req.gettext('Loading...'), success: true });
     } else {
+      statsd.increment('authentication.openid.failure.mismatch');
       res.status(409).render('error_mismatch',
         { title: req.gettext('Accounts do not match'),
           claimed: req.session.claimed, proven: result.email });
