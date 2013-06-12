@@ -4,7 +4,7 @@ const clientSessions = require('client-sessions');
 const jwcrypto = require('jwcrypto');
 const request = require('request');
 
-const app = require('../bin/gmail-bridge');
+const app = require('../bin/sideshow');
 const config = require('../lib/config');
 const mockid = require('./lib/mockid');
 
