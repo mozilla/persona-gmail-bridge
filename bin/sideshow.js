@@ -118,7 +118,12 @@ app.use(i18n.abide({
 // -- Express Routes --
 
 app.get('/__heartbeat__', function (req, res) {
-  res.send('ok');
+  openid.discover(googleEndpoint, true, function(err/*, providers*/) {
+    if (err) {
+      return res.status(500).end('bad');
+    }
+    res.send('ok');
+  });
 });
 
 app.get('/.well-known/browserid', function (req, res) {
