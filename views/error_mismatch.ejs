@@ -6,8 +6,5 @@
        ['<b>' + escape(claimed) + '</b>']) %></p>
 <p><button id="cancel">Try again</button></p>
 <script src="<%= personaUrl %>/authentication_api.js"></script>
-<script>
-  var cancelButton = document.getElementById('cancel');
-  cancelButton.onclick = function () { navigator.id.raiseAuthenticationFailure() };
-</script>
+<script src="/static/js/error.js"></script>
 <% include _footer %>
