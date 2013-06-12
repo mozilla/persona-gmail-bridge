@@ -14,7 +14,7 @@
   "license": "MPL 2.0",
   "scripts": {
     "preinstall": "node ./scripts/lockdown.js",
-    "start": "node ./server.js --issuer=gmail.com",
+    "start": "node ./bin/sideshow.js --issuer=gmail.com",
     "test": "mocha --check-leaks --globals sPaddedMessageHex"
   },
   "dependencies": {

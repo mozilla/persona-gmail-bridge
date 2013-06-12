@@ -14,13 +14,13 @@ const i18n = require('i18n-abide');
 const openid = require('openid');
 const clientSessions = require('client-sessions');
 
-const caching = require('./lib/caching');
-const compare = require('./lib/compare');
-const config = require('./lib/config');
-const logger = require('./lib/logging').logger;
-const cert = require('./lib/cert');
-const keys = require('./lib/keys');
-const statsd = require('./lib/statsd');
+const caching = require('../lib/caching');
+const compare = require('../lib/compare');
+const config = require('../lib/config');
+const logger = require('../lib/logging').logger;
+const cert = require('../lib/cert');
+const keys = require('../lib/keys');
+const statsd = require('../lib/statsd');
 
 const IS_SECURE = url.parse(config.get('publicUrl')).protocol === 'https:';
 if (config.get('secret') === config.default('secret')) {
@@ -48,7 +48,7 @@ const app = express();
 
 // -- Express Configuration --
 
-app.set('views', path.join(__dirname, '/views'));
+app.set('views', path.join(__dirname, '..', 'views'));
 app.set('view engine', 'ejs');
 
 app.locals.personaUrl = config.get('personaUrl');
@@ -213,7 +213,7 @@ app.get('/authenticate/verify', function (req, res) {
   });
 });
 
-app.use('/static', express.static('static'));
+app.use('/static', express.static(path.join(__dirname, '..', 'static')));
 
 // -- Module Setup --
 
