@@ -62,20 +62,20 @@ By default, Sideshow reports statistics via [statsd](https://github.com/etsy/sta
 
 ### Counters
 
-`authentication.forwarding.success`
-`authentication.forwarding.failure`
+    authentication.forwarding.success
+    authentication.forwarding.failure
 
-`authentication.openid.success`
-`authentication.openid.failure.cancelled`
-`authentication.openid.failure.bad_request`
-`authentication.openid.failure.mismatch`
+    authentication.openid.success
+    authentication.openid.failure.cancelled
+    authentication.openid.failure.bad_request
+    authentication.openid.failure.mismatch
 
-`certification.success`
-`certification.failure.no_proof`
-`certification.failure.signing_error`
+    certification.success
+    certification.failure.no_proof
+    certification.failure.signing_error
 
-`response_code.{code}` -- on every response
+    response_code.{code} -- on every response
 
 ### Timers
 
-`routes.{path}.{method}` -- on every request
+    routes.{path}.{method} -- on every request
