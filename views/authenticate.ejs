@@ -1,5 +1,8 @@
 <% include _header %>
-<h1><%= title %></h1>
+<div class="loading">
+  <p class="progress"><%= title %></p>
+  <img src="/static/i/progress.gif" width="128" height="15" alt="Loading" />
+</div>
 <script src="<%= personaUrl %>/authentication_api.js"></script>
 <script src="/static/js/auth_start.js"></script>
 <% include _footer %>

@@ -13,6 +13,8 @@ const express = require('express');
 const i18n = require('i18n-abide');
 const openid = require('openid');
 const clientSessions = require('client-sessions');
+const fonts = require('connect-fonts');
+const opensans = require('connect-fonts-opensans');
 
 const caching = require('../lib/caching');
 const compare = require('../lib/compare');
@@ -122,6 +124,12 @@ app.use(i18n.abide({
   default_lang: config.get('localeDefault'),
   debug_lang: config.get('localeDebug'),
   translation_directory: config.get('localePath')
+}));
+
+app.use(fonts.setup({
+  fonts: [ opensans ],
+  allow_origin: config.get('publicUrl'),
+  maxage: 1000 * 24 * 60 * 60 * 180 // 180 days
 }));
 
 // -- Express Routes --
