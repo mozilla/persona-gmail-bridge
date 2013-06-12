@@ -24,7 +24,7 @@ describe('JSHint', function () {
   var commonPath = path.join(__dirname, '..');
 
   var files = Array.prototype.concat(
-    path.join(__dirname, '..', 'server.js'),
+    path.join(__dirname, '..', 'bin', 'gmail-bridge.js'),
     walk.sync(path.join(__dirname, '..', 'lib')),
     walk.sync(path.join(__dirname, '..', 'scripts')),
     walk.sync(path.join(__dirname, '..', 'test'))
