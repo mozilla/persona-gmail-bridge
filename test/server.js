@@ -98,6 +98,30 @@ describe('HTTP Endpoints', function () {
     });
   });
 
+  describe('/session', function() {
+    var url = BASE_URL + '/session';
+    var res;
+    var body;
+    before(function(done) {
+      request.get(url, function (err, _res, _body) {
+        res = _res;
+        body = _body;
+        done(err);
+      });
+    });
+
+    it('should respond to GET', function() {
+      assert.equal(res.statusCode, 200);
+    });
+
+    it('should provide the CSRF token', function() {
+      var json = JSON.parse(body);
+      assert(json.csrf);
+    });
+
+    it('should return a proven email');
+  });
+
   describe('/provision', function () {
     var url = BASE_URL + '/provision';
     url; // Make JSHint shut up for the moment...

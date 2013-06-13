@@ -1,11 +1,10 @@
 <% include _header %>
 <h1><%= title %></h1>
 <script src="<%= personaUrl %>/authentication_api.js"></script>
-<script>
 <% if (success) { %>
-  navigator.id.completeAuthentication();
+<script src="/static/js/auth_success.js"></script>
 <% } else { %>
-  navigator.id.raiseAuthenticationFailure();
+<script src="/static/js/auth_failure.js"></script>
 <% } %>
 </script>
 <% include _footer %>

@@ -27,6 +27,7 @@ describe('JSHint', function () {
     path.join(__dirname, '..', 'bin', 'sideshow.js'),
     walk.sync(path.join(__dirname, '..', 'lib')),
     walk.sync(path.join(__dirname, '..', 'scripts')),
+    walk.sync(path.join(__dirname, '..', 'static')),
     walk.sync(path.join(__dirname, '..', 'test'))
   );
 
