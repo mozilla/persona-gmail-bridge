@@ -93,9 +93,14 @@ app.use(express.csrf());
 express.logger.token('path', function(req) {
   return req.path;
 });
+express.logger.token('safe-referrer', function(req) {
+  var referrer = req.headers.referer || req.headers.referrer || '';
+  var queryIdx = referrer.indexOf('?');
+  return (queryIdx < 0) ? referrer : referrer.slice(0, queryIdx);
+});
 app.use(express.logger({
   format: ':remote-addr - - ":method :path HTTP/:http-version" :status ' +
-          ':response-time :res[content-length] ":referrer" ":user-agent"',
+          ':response-time :res[content-length] ":safe-referrer" ":user-agent"',
   stream: {
     write: function(x) {
       logger.info(String(x).trim());
