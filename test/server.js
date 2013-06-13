@@ -4,16 +4,18 @@
 
 const assert = require('assert');
 
-const clientSessions = require('client-sessions');
 const jwcrypto = require('jwcrypto');
 const request = require('request');
 
 const app = require('../bin/sideshow');
 const config = require('../lib/config');
 const mockid = require('./lib/mockid');
+const mookie = require('./lib/cookie');
 
 const BASE_URL = 'http://localhost:3033';
 const TEST_EMAIL = 'hikingfan@gmail.com';
+const PROVEN_EMAIL = TEST_EMAIL;
+const CLAIMED_EMAIL = 'hiking.fan+1@gmail.com';
 
 /* globals describe, before, after, it */
 
@@ -100,26 +102,59 @@ describe('HTTP Endpoints', function () {
 
   describe('/session', function() {
     var url = BASE_URL + '/session';
-    var res;
-    var body;
-    before(function(done) {
-      request.get(url, function (err, _res, _body) {
-        res = _res;
-        body = _body;
-        done(err);
+
+    describe('GET', function() {
+      var res;
+      var body;
+      before(function(done) {
+        request.get(url, function (err, _res, _body) {
+          res = _res;
+          body = _body;
+          done(err);
+        });
+      });
+
+      it('should respond to GET', function() {
+        assert.equal(res.statusCode, 200);
+      });
+
+      it('should provide the CSRF token', function() {
+        var json = JSON.parse(body);
+        assert(json.csrf);
       });
     });
 
-    it('should respond to GET', function() {
-      assert.equal(res.statusCode, 200);
-    });
+    describe('.proven', function() {
+      it('should be equal to claimed email', function(done) {
+        var jar = request.jar();
+        jar.add(request.cookie('session=' + mookie({
+          proven: PROVEN_EMAIL,
+          claimed: CLAIMED_EMAIL
+        })));
+        request.get({ url: url, jar: jar }, function(err, res, body) {
+          assert.ifError(err);
 
-    it('should provide the CSRF token', function() {
-      var json = JSON.parse(body);
-      assert(json.csrf);
-    });
+          var json = JSON.parse(body);
+          assert.equal(json.proven, CLAIMED_EMAIL);
+          done();
+        });
+      });
 
-    it('should return a proven email');
+      it('should be false if mismatch', function(done) {
+        var jar = request.jar();
+        jar.add(request.cookie('session=' + mookie({
+          proven: PROVEN_EMAIL,
+          claimed: 'its.not.me@gmail.com'
+        })));
+        request.get({ url: url, jar: jar }, function(err, res, body) {
+          assert.ifError(err);
+
+          var json = JSON.parse(body);
+          assert.equal(json.proven, false);
+          done();
+        });
+      });
+    });
   });
 
   describe('/provision', function () {
@@ -142,24 +177,16 @@ describe('HTTP Endpoints', function () {
         });
       });
 
-      var cookie;
-      before(function () {
-        // Forge a session cookie
-        var cookieOptions = {
-          cookieName: 'session',
-          secret: config.get('secret')
-        };
-        var cookieContents = { _csrf: 'foo', proven: TEST_EMAIL };
-
-        cookie = clientSessions.util.encode(cookieOptions, cookieContents);
-      });
-
       it('should sign certificates', function (done) {
         var jar = request.jar();
-        jar.add(request.cookie('session=' + cookie));
+        jar.add(request.cookie('session=' + mookie({ proven: PROVEN_EMAIL })));
         var options = {
-          headers: { 'X-CSRF-Token': 'foo' },
-          json: { email: TEST_EMAIL, pubkey: pubkey, duration: 5 * 60 * 1000 },
+          headers: { 'X-CSRF-Token': 'test' },
+          json: {
+            email: CLAIMED_EMAIL,
+            pubkey: pubkey,
+            duration: 5 * 60 * 1000
+          },
           jar: jar
         };
 
