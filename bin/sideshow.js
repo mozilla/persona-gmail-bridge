@@ -17,6 +17,7 @@ const clientSessions = require('client-sessions');
 const caching = require('../lib/caching');
 const compare = require('../lib/compare');
 const config = require('../lib/config');
+const csp = require('../lib/csp');
 const logger = require('../lib/logging').logger;
 const cert = require('../lib/cert');
 const keys = require('../lib/keys');
@@ -67,6 +68,13 @@ if (IS_SECURE) {
     next();
   });
 }
+
+app.use(csp([
+  '/provision',
+  '/authenticate',
+  '/authenticate/forward',
+  '/authenticate/verify'
+]));
 
 app.use(clientSessions({
   cookieName: 'session',
