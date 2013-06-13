@@ -145,7 +145,7 @@ app.get('/session', function(req, res) {
 });
 
 app.get('/provision', function (req, res) {
-  res.render('provision', { _csrf: req.session._csrf });
+  res.render('provision');
 });
 
 app.post('/provision/certify', function(req, res) {
