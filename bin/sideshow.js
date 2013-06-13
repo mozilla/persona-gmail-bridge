@@ -105,7 +105,8 @@ app.use(caching.prevent([
   '/__heartbeat__',
   '/provision',
   '/provision/certify',
-  '/authenticate/verify'
+  '/authenticate/verify',
+  '/session'
 ]));
 
 app.use(i18n.abide({
@@ -131,15 +132,20 @@ app.get('/.well-known/browserid', function (req, res) {
   });
 });
 
-app.get('/provision', function (req, res) {
-  var claimed = req.session.claimed;
+app.get('/session', function(req, res) {
   // the authed email will have been normalized, but navigator.id should
   // give us the claimed email again. As long we're sure the original
   // claimed email normalizes to the authed email, we can proceed.
-  if (!compare(claimed, req.session.proven)) {
-    claimed = '';
-  }
-  res.render('provision', { certify: claimed, _csrf: req.session._csrf });
+  var claimed = req.session.claimed;
+  var proven = req.session.proven;
+  res.json({
+    csrf: req.session._csrf,
+    proven: compare(claimed, proven) && claimed
+  });
+});
+
+app.get('/provision', function (req, res) {
+  res.render('provision');
 });
 
 app.post('/provision/certify', function(req, res) {

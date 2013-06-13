@@ -1,10 +1,5 @@
 <% include _header %>
 <h1><%= title %></h1>
 <script src="<%= personaUrl %>/authentication_api.js"></script>
-<script>
-  navigator.id.beginAuthentication(function (email) {
-    var escapedEmail = encodeURIComponent(email);
-    window.location = '/authenticate/forward?email=' + escapedEmail;
-  });
-</script>
+<script src="/static/js/auth_start.js"></script>
 <% include _footer %>
