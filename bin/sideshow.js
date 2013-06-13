@@ -175,6 +175,7 @@ app.post('/provision/certify', function(req, res) {
   // trying to sign a cert? then kill this cookie while we're here.
   req.session.reset(['_csrf']);
   if (!isCorrectEmail) {
+    logger.error('Email not proven, will not sign certificate');
     statsd.increment('certification.failure.no_proof');
     return res.send(401, "Email isn't verified.");
   }
@@ -187,6 +188,7 @@ app.post('/provision/certify', function(req, res) {
       email: req.body.email // use user supplied email, not normalized email
     }, function onCert(err, cert) {
       if (err) {
+        logger.error('Error signing certificate: %s', String(err));
         statsd.increment('certification.failure.signing_error');
         return res.send(500, err);
       }
@@ -206,6 +208,9 @@ app.get('/authenticate', function (req, res) {
 app.get('/authenticate/forward', function (req, res) {
   openidRP.authenticate(googleEndpoint, false, function (error, authUrl) {
     if (error || !authUrl || !req.query.email) {
+      logger.error('Authentication forwarding failed ' +
+        '[Error: %s, authUrl: %s, query.email: %s]',
+        String(error), authUrl, String(!req.query.email));
       statsd.increment('authentication.forwarding.failure');
       res.status(500).render('error', { title: req.gettext('Error') });
     } else {
@@ -219,10 +224,12 @@ app.get('/authenticate/forward', function (req, res) {
 app.get('/authenticate/verify', function (req, res) {
   openidRP.verifyAssertion(req, function (error, result) {
     if (error && error.message === 'Authentication cancelled') {
+      logger.info('User cancelled during openid dialog');
       statsd.increment('authentication.openid.failure.cancelled');
       res.render('authenticate_finish',
         { title: req.gettext('Loading...'), success: false });
     } else if (error || !result.authenticated || !result.email) {
+      logger.error('OpenID verification failed: %s', String(error));
       statsd.increment('authentication.openid.failure.bad_result');
       res.status(403).render('error',
         { title: req.gettext('Error'), errorInfo: error.message });
@@ -232,6 +239,7 @@ app.get('/authenticate/verify', function (req, res) {
       res.render('authenticate_finish',
         { title: req.gettext('Loading...'), success: true });
     } else {
+      logger.info('User accounts do no match');
       statsd.increment('authentication.openid.failure.mismatch');
       res.status(409).render('error_mismatch',
         { title: req.gettext('Accounts do not match'),
