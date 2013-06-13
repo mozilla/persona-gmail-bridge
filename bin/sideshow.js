@@ -105,7 +105,8 @@ app.use(caching.prevent([
   '/__heartbeat__',
   '/provision',
   '/provision/certify',
-  '/authenticate/verify'
+  '/authenticate/verify',
+  '/session'
 ]));
 
 app.use(i18n.abide({
