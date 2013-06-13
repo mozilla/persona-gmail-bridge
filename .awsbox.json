@@ -1,5 +1,5 @@
 {
-  "processes": [ "server.js" ],
+  "processes": [ "bin/sideshow.js" ],
   "env": {
     "CONFIG_FILES": "$HOME/config.json",
     "PERSONA_URL": "https://login.dev.anosrep.org"
