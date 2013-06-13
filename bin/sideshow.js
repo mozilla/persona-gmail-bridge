@@ -234,7 +234,7 @@ app.get('/authenticate/verify', function (req, res) {
     } else {
       statsd.increment('authentication.openid.failure.mismatch');
       res.status(409).render('error_mismatch',
-        { title: req.gettext('Accounts do not match'),
+        { title: req.gettext("Accounts don't match"),
           claimed: req.session.claimed, proven: result.email });
     }
   });

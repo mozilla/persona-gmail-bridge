@@ -1,11 +1,14 @@
 <% include _header %>
 <h2><%= title %></h2>
-<p><%- format(gettext("It looks like you were trying to sign in as %(claimed)s but were actually signed into Google as %(proven)s."),
-       { claimed: '<b>' + escape(claimed) + '</b>', proven: '<b>' + proven + '</b>' }) %></p>
+<p><%- format(gettext("You're currently signed into Google as %s."), ['<b>' + escape(proven) + '</b>']) %></p>
+
+<p><%- format(gettext("If you want to use %s, log out of Google and sign in again."),
+       ['<b>' + escape(claimed) + '</b>']) %></p>
 <p>
-  <button id="tryAgain"><%= gettext("Sign out of Google and try again") %></button>
-  <button id="cancel">Cancel</button>
+  <button id="cancel">Go back</button>
+  <button id="tryAgain"><%= gettext("Force Google logout") %></button>
 </p>
 <script src="<%= personaUrl %>/authentication_api.js"></script>
 <script src="/static/js/cancel_button.js"></script>
+<script src="/static/js/mismatch.js"></script>
 <% include _footer %>
