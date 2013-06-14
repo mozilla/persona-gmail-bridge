@@ -24,7 +24,7 @@ sideshow: BrowserID Bridging to Google.
 %build
 npm install --production
 export PATH=$PWD/node_modules/.bin:$PATH
-echo "$GIT_REVISION" > static/ver.txt
+git show-branch $GIT_HASH > static/ver.txt
 
 %install
 rm -rf %{buildroot}

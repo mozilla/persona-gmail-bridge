@@ -24,7 +24,6 @@ fi
 rm -rf rpmbuild
 mkdir -p rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/BUILD
 
-export GIT_REVISION=$(git log -1 --oneline)
 export GIT_HASH=$(git rev-parse $VER);
 export SIDESHOW_VER="$(echo $VER | sed 's/-/_/g').$GIT_HASH"
 
