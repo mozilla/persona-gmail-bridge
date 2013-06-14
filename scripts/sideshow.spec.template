@@ -12,7 +12,7 @@ URL:           https://github.com/callahad/sideshow
 BuildRoot:     %{_tmppath}/%{name}-%{version}-%{release}-root
 AutoReqProv:   no
 Requires:      openssl, nodejs >= 0.8.17
-BuildRequires: gcc-c++, git, jre, make, npm, openssl-devel, expat-devel, nodejs >= 0.8.17
+BuildRequires: gcc-c++, gmp-devel, make, nodejs >= 0.8.17
 Source:        sideshow-%{version}.tar.gz
 
 %description
