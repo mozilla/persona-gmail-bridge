@@ -9,6 +9,11 @@ progname=$(basename $0)
 TOP="$(cd $(dirname $0)/..; pwd)" # top level of the checkout
 cd $TOP
 
+if [ ! $(command -v git) ]; then
+    echo >&2 "Git not found. Aborting."
+    exit 1
+fi
+
 if [ $# -ne 1 ]; then
     echo "Usage: $(basename $0) (GIT_SHA | GIT_TAG | GIT_BRANCH)"
     exit 1
