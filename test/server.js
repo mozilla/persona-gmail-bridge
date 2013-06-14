@@ -6,6 +6,7 @@ const assert = require('assert');
 
 const jwcrypto = require('jwcrypto');
 const request = require('request');
+const openid = require('openid');
 
 const app = require('../bin/sideshow');
 const config = require('../lib/config');
@@ -44,9 +45,14 @@ describe('HTTP Endpoints', function () {
     var body;
 
     before(function (done) {
+      var discover = openid.discover;
+      openid.discover = function(a, b, cb) {
+        cb(null, [{}]);
+      };
       request.get(url, function (err, _res, _body) {
         res = _res;
         body = _body;
+        openid.discover = discover;
         done(err);
       });
     });
