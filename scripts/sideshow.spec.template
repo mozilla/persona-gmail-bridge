@@ -29,7 +29,7 @@ echo "$GIT_REVISION" > static/ver.txt
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}%{_rootdir}
-for f in bin lib node_modules static views; do
+for f in bin lib node_modules static views *.json; do
     cp -rp $f %{buildroot}%{_rootdir}/
 done
 
