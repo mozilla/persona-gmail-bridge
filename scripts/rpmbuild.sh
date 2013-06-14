@@ -22,17 +22,12 @@ if [ ! $(command -v git) ]; then
 fi
 
 rm -rf rpmbuild
-mkdir -p rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/BUILD rpmbuild/TMP
-git clone . rpmbuild/TMP &>/dev/null
-cd rpmbuild/TMP
-git checkout $VER &>/dev/null
+mkdir -p rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/BUILD
 
-export GIT_REVISION=$(git log -1 --oneline)
-export GIT_HASH=$(echo $GIT_REVISION | cut -d ' ' -f1)
+export GIT_HASH=$(git rev-parse $VER);
 export SIDESHOW_VER="$(echo $VER | sed 's/-/_/g').$GIT_HASH"
 
-tar --exclude .git \
-    -czf "$TOP/rpmbuild/SOURCES/sideshow-$SIDESHOW_VER.tar.gz" .
+git archive -o "$TOP/rpmbuild/SOURCES/sideshow-$SIDESHOW_VER.tar.gz" $GIT_HASH
 
 cd $TOP
 set +e
