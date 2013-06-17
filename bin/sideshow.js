@@ -216,8 +216,9 @@ app.get('/authenticate', function (req, res) {
 });
 
 app.get('/authenticate/forward', function (req, res) {
-  // Check input preconditions
-  if (!req.query.email || !email.valid(req.query.email)) {
+  // Check input precondition:
+  // There should be a valid email address in the 'email' query argument.
+  if (!email.valid(req.query.email)) {
     logger.error('Authentication forwarding attempted with bad input');
     statsd.increment('authentication.forwarding.failure.bad_input');
     return res.status(500).render('error',
@@ -239,6 +240,15 @@ app.get('/authenticate/forward', function (req, res) {
 });
 
 app.get('/authenticate/verify', function (req, res) {
+  // Check input precondition:
+  // Session should include a valid email address that the user is claiming.
+  if (!email.valid(req.session.claimed)) {
+    logger.error('Invalid or missing claimed email');
+    statsd.increment('authentication.openid.failure.no_claim');
+    return res.status(500).render('error',
+      { title: req.gettext('Error'), errorInfo: 'Invalid or missing claim.' });
+  }
+
   openidRP.verifyAssertion(req, function (error, result) {
     if (error && error.message === 'Authentication cancelled') {
       logger.info('User cancelled during openid dialog');

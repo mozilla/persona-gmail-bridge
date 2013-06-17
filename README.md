@@ -56,9 +56,10 @@ By default, Sideshow reports statistics via [statsd](https://github.com/etsy/sta
     authentication.forwarding.failure.openid_error
 
     authentication.openid.success
-    authentication.openid.failure.cancelled
     authentication.openid.failure.bad_result
+    authentication.openid.failure.cancelled
     authentication.openid.failure.mismatch
+    authentication.openid.failure.no_claim
 
     certification.success
     certification.failure.no_proof
