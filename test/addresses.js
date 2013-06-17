@@ -7,6 +7,42 @@ const email = require('../lib/email');
 
 /* global describe, it */
 
+describe('Email validity', function () {
+  describe('valid addresses', function () {
+    var addresses = [
+      'foo@example.com',
+      '.foo@example.com',
+      'f...oo@example.com',
+      'foo+bar@example.com'
+    ];
+
+    addresses.forEach(function(address) {
+      it('should be valid: ' + address, function () {
+        assert(email.valid(address));
+      });
+    });
+  });
+
+  describe('invalid addresses', function () {
+    var addresses = [
+      '@example.com',
+      'foo@',
+      'foo@@example.com',
+      'foo@-example-.com',
+      '',
+      undefined,
+      null,
+      false
+    ];
+
+    addresses.forEach(function(address) {
+      it('should not be valid: ' + address, function () {
+        assert(!email.valid(address));
+      });
+    });
+  });
+});
+
 describe('Gmail Address Comparison', function () {
   describe('Identical inputs', function () {
     it('should be true if both are valid addresses', function () {
