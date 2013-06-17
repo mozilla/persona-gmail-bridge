@@ -139,6 +139,10 @@ app.use(fonts.setup({
 
 // -- Express Routes --
 
+app.get('/', function (req, res) {
+  res.redirect(config.get('personaUrl'));
+});
+
 app.get('/__heartbeat__', function (req, res) {
   openid.discover(googleEndpoint, true, function(err/*, providers*/) {
     if (err) {
