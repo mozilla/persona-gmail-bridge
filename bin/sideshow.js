@@ -188,6 +188,7 @@ app.post('/provision/certify', function(req, res) {
     statsd.increment('certification.failure.no_proof');
     return res.send(401, "Email isn't verified.");
   }
+
   keys(function(pubKey, privKey) {
     cert.sign({
       privkey: privKey,
@@ -215,12 +216,19 @@ app.get('/authenticate', function (req, res) {
 });
 
 app.get('/authenticate/forward', function (req, res) {
+  // Check input preconditions
+  if (!req.query.email || !email.valid(req.query.email)) {
+    logger.error('Authentication forwarding attempted with bad input');
+    statsd.increment('authentication.forwarding.failure.bad_input');
+    return res.status(500).render('error',
+      { title: req.gettext('Error'), errorInfo: 'Invalid or missing email.' });
+  }
+
   openidRP.authenticate(googleEndpoint, false, function (error, authUrl) {
-    if (error || !authUrl || !req.query.email) {
-      logger.error('Authentication forwarding failed ' +
-        '[Error: %s, authUrl: %s, query.email: %s]',
-        String(error), authUrl, String(!req.query.email));
-      statsd.increment('authentication.forwarding.failure');
+    if (error || !authUrl) {
+      logger.error('Authentication forwarding failed: [Error: %s, authUrl: %s]',
+        String(error), authUrl);
+      statsd.increment('authentication.forwarding.failure.openid_error');
       res.status(500).render('error', { title: req.gettext('Error') });
     } else {
       statsd.increment('authentication.forwarding.success');
@@ -237,7 +245,7 @@ app.get('/authenticate/verify', function (req, res) {
       statsd.increment('authentication.openid.failure.cancelled');
       res.render('authenticate_finish',
         { title: req.gettext('Loading...'), success: false });
-    } else if (error || !result.authenticated || !result.email) {
+    } else if (error || !result.authenticated || !email.valid(result.email)) {
       logger.error('OpenID verification failed: %s', String(error));
       statsd.increment('authentication.openid.failure.bad_result');
       res.status(403).render('error',

@@ -52,11 +52,12 @@ By default, Sideshow reports statistics via [statsd](https://github.com/etsy/sta
 ### Counters
 
     authentication.forwarding.success
-    authentication.forwarding.failure
+    authentication.forwarding.failure.bad_input
+    authentication.forwarding.failure.openid_error
 
     authentication.openid.success
     authentication.openid.failure.cancelled
-    authentication.openid.failure.bad_request
+    authentication.openid.failure.bad_result
     authentication.openid.failure.mismatch
 
     certification.success
