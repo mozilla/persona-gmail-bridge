@@ -39,6 +39,19 @@ describe('HTTP Endpoints', function () {
     server.close();
   });
 
+  describe('/', function () {
+    var url = BASE_URL + '/';
+    var options = { followRedirect: false };
+
+    it('should redirect to the Persona homepage', function(done) {
+      request.get(url, options, function (err, res) {
+        assert.equal(res.statusCode, 302);
+        assert.equal(res.headers.location, config.get('personaUrl'));
+        done(err);
+      });
+    });
+  });
+
   describe('/__heartbeat__', function () {
     var url = BASE_URL + '/__heartbeat__';
     var res;
