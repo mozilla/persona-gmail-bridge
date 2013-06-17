@@ -2,6 +2,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+// Silence app logging by default. Must come before require('../bin/sideshow');
+const config = require('../lib/config');
+if (config.get('logPath') === config.default('logPath') &&
+    !process.env.LOG_PATH) {
+  config.set('logPath', '/dev/null');
+}
+
 const assert = require('assert');
 
 const jwcrypto = require('jwcrypto');
@@ -9,7 +16,6 @@ const request = require('request');
 const openid = require('openid');
 
 const app = require('../bin/sideshow');
-const config = require('../lib/config');
 const mockid = require('./lib/mockid');
 const mookie = require('./lib/cookie');
 
