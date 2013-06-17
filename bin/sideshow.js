@@ -17,9 +17,9 @@ const fonts = require('connect-fonts');
 const opensans = require('connect-fonts-opensans');
 
 const caching = require('../lib/caching');
-const compare = require('../lib/compare');
 const config = require('../lib/config');
 const csp = require('../lib/csp');
+const email = require('../lib/email');
 const logger = require('../lib/logging').logger;
 const cert = require('../lib/cert');
 const keys = require('../lib/keys');
@@ -170,7 +170,7 @@ app.get('/session', function(req, res) {
   var proven = req.session.proven;
   res.json({
     csrf: req.session._csrf,
-    proven: compare(claimed, proven) && claimed
+    proven: email.compare(claimed, proven) && claimed
   });
 });
 
@@ -179,7 +179,7 @@ app.get('/provision', function (req, res) {
 });
 
 app.post('/provision/certify', function(req, res) {
-  var isCorrectEmail = compare(req.body.email, req.session.proven);
+  var isCorrectEmail = email.compare(req.body.email, req.session.proven);
 
   // trying to sign a cert? then kill this cookie while we're here.
   req.session.reset(['_csrf']);
@@ -242,7 +242,7 @@ app.get('/authenticate/verify', function (req, res) {
       statsd.increment('authentication.openid.failure.bad_result');
       res.status(403).render('error',
         { title: req.gettext('Error'), errorInfo: error.message });
-    } else if (compare(req.session.claimed, result.email)) {
+    } else if (email.compare(req.session.claimed, result.email)) {
       statsd.increment('authentication.openid.success');
       req.session.proven = result.email;
       res.render('authenticate_finish',
