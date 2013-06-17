@@ -26,7 +26,7 @@ Visit http://127.0.0.1:10001/ and try signing in with your Gmail account!
 Testing
 -------
 
-1. `LOG_PATH=/dev/null npm test`
+1. `npm test`
 
 You're done!
 
