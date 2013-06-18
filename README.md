@@ -63,6 +63,7 @@ By default, Sideshow reports statistics via [statsd](https://github.com/etsy/sta
 
     certification.success
     certification.failure.no_proof
+    certification.failure.invalid_pubkey
     certification.failure.signing_error
 
     response_code.{code} -- on every response

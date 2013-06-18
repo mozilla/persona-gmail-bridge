@@ -195,7 +195,8 @@ app.post('/provision/certify', validate({
     }
     if (!req.body.pubkey) {
       logger.error('Valid public key missing, can\'t sign it.');
-      return res.send(401, "Pubkey isn't valid.");
+      statsd.increment('certification.failure.invalid_pubkey');
+      return res.send(400, "Pubkey isn't valid.");
     }
     if (req.body.duration === undefined) {
       req.body.duration = config.get('certDefaultDuration');
