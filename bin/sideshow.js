@@ -193,6 +193,13 @@ app.post('/provision/certify', validate({
       statsd.increment('certification.failure.no_proof');
       return res.send(401, "Email isn't verified.");
     }
+    if (!req.body.pubkey) {
+      logger.error('Valid public key missing, can\'t sign it.');
+      return res.send(401, "Pubkey isn't valid.");
+    }
+    if (req.body.duration === undefined) {
+      req.body.duration = config.get('certDefaultDuration');
+    }
 
     keys(function(pubKey, privKey) {
       cert.sign({
@@ -222,12 +229,11 @@ app.get('/authenticate', function (req, res) {
 
 app.get('/authenticate/forward', validate({ email: 'gmail' }),
   function (req, res) {
-    // Check input precondition:
-    // There should be a valid email address in the 'email' query argument.
-    if (!email.valid(req.query.email)) {
+    // if there is no email address, a valid email wasn't sent
+    if (!req.query.email) {
       logger.error('Authentication forwarding attempted with bad input');
       statsd.increment('authentication.forwarding.failure.bad_input');
-      return res.status(500).render('error', {
+      return res.status(400).render('error', {
         title: req.gettext('Error'),
         errorInfo: 'Invalid or missing email.'
       });
