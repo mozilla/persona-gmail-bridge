@@ -83,3 +83,23 @@ describe('Gmail Address Comparison', function () {
     });
   });
 });
+
+describe('Gmail detection', function() {
+  describe('valid addresses', function() {
+    it('should return true from isGmail', function() {
+      assert(email.isGmail('alice.foo+bar@gmail.com'));
+    });
+  });
+
+  describe('malformed addresses', function() {
+    it('should return false from isGmail', function() {
+      assert(!email.isGmail('@gmail.com'));
+    });
+  });
+
+  describe('non-Gmail address', function() {
+    it('should return false from isGmail', function() {
+      assert(!email.isGmail('alice@bar.com'));
+    });
+  });
+});
