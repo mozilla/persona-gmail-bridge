@@ -260,7 +260,7 @@ app.get('/authenticate/verify', function (req, res) {
   if (!email.valid(req.session.claimed)) {
     logger.error('Invalid or missing claimed email');
     statsd.increment('authentication.openid.failure.no_claim');
-    return res.status(500).render('error',
+    return res.status(400).render('error',
       { title: req.gettext('Error'), errorInfo: 'Invalid or missing claim.' });
   }
 
