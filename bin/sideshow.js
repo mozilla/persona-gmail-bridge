@@ -17,13 +17,14 @@ const fonts = require('connect-fonts');
 const opensans = require('connect-fonts-opensans');
 
 const caching = require('../lib/caching');
-const compare = require('../lib/compare');
 const config = require('../lib/config');
 const csp = require('../lib/csp');
+const email = require('../lib/email');
 const logger = require('../lib/logging').logger;
 const cert = require('../lib/cert');
 const keys = require('../lib/keys');
 const statsd = require('../lib/statsd');
+const validate = require('../lib/validate');
 
 const IS_SECURE = url.parse(config.get('publicUrl')).protocol === 'https:';
 if (config.get('secret') === config.default('secret')) {
@@ -170,7 +171,7 @@ app.get('/session', function(req, res) {
   var proven = req.session.proven;
   res.json({
     csrf: req.session._csrf,
-    proven: compare(claimed, proven) && claimed
+    proven: email.compare(claimed, proven) && claimed
   });
 });
 
@@ -178,71 +179,103 @@ app.get('/provision', function (req, res) {
   res.render('provision');
 });
 
-app.post('/provision/certify', function(req, res) {
-  var isCorrectEmail = compare(req.body.email, req.session.proven);
+app.post('/provision/certify', validate({
+    email: 'gmail',
+    pubkey: 'pubkey',
+    duration: 'number'
+  }), function(req, res) {
+    var isCorrectEmail = email.compare(req.body.email, req.session.proven);
 
-  // trying to sign a cert? then kill this cookie while we're here.
-  req.session.reset(['_csrf']);
-  if (!isCorrectEmail) {
-    logger.error('Email not proven, will not sign certificate');
-    statsd.increment('certification.failure.no_proof');
-    return res.send(401, "Email isn't verified.");
-  }
-  keys(function(pubKey, privKey) {
-    cert.sign({
-      privkey: privKey,
-      hostname: config.get('issuer'),
-      duration: Math.min(req.body.duration, config.get('certMaxDuration')),
-      pubkey: req.body.pubkey,
-      email: req.body.email // use user supplied email, not normalized email
-    }, function onCert(err, cert) {
-      if (err) {
-        logger.error('Error signing certificate: %s', String(err));
-        statsd.increment('certification.failure.signing_error');
-        return res.send(500, err);
-      }
+    // trying to sign a cert? then kill this cookie while we're here.
+    req.session.reset(['_csrf']);
+    if (!isCorrectEmail) {
+      logger.error('Email not proven, will not sign certificate');
+      statsd.increment('certification.failure.no_proof');
+      return res.send(401, "Email isn't verified.");
+    }
+    if (!req.body.pubkey) {
+      logger.error('Valid public key missing, can\'t sign it.');
+      statsd.increment('certification.failure.invalid_pubkey');
+      return res.send(400, "Pubkey isn't valid.");
+    }
+    if (req.body.duration === undefined) {
+      req.body.duration = config.get('certDefaultDuration');
+    }
 
-      statsd.increment('certification.success');
-      res.json({
-        cert: cert
+    keys(function(pubKey, privKey) {
+      cert.sign({
+        privkey: privKey,
+        hostname: config.get('issuer'),
+        duration: Math.min(req.body.duration, config.get('certMaxDuration')),
+        pubkey: req.body.pubkey,
+        email: req.body.email // use user supplied email, not normalized email
+      }, function onCert(err, cert) {
+        if (err) {
+          logger.error('Error signing certificate: %s', String(err));
+          statsd.increment('certification.failure.signing_error');
+          return res.send(500, err);
+        }
+
+        statsd.increment('certification.success');
+        res.json({
+          cert: cert
+        });
       });
     });
   });
-});
 
 app.get('/authenticate', function (req, res) {
   res.render('authenticate', { title: req.gettext('Loading...') });
 });
 
-app.get('/authenticate/forward', function (req, res) {
-  openidRP.authenticate(googleEndpoint, false, function (error, authUrl) {
-    if (error || !authUrl || !req.query.email) {
-      logger.error('Authentication forwarding failed ' +
-        '[Error: %s, authUrl: %s, query.email: %s]',
-        String(error), authUrl, String(!req.query.email));
-      statsd.increment('authentication.forwarding.failure');
-      res.status(500).render('error', { title: req.gettext('Error') });
-    } else {
-      statsd.increment('authentication.forwarding.success');
-      req.session.claimed = req.query.email;
-      res.redirect(authUrl);
+app.get('/authenticate/forward', validate({ email: 'gmail' }),
+  function (req, res) {
+    // if there is no email address, a valid email wasn't sent
+    if (!req.query.email) {
+      logger.error('Authentication forwarding attempted with bad input');
+      statsd.increment('authentication.forwarding.failure.bad_input');
+      return res.status(400).render('error', {
+        title: req.gettext('Error'),
+        errorInfo: 'Invalid or missing email.'
+      });
     }
+
+    openidRP.authenticate(googleEndpoint, false, function (error, authUrl) {
+      if (error || !authUrl) {
+        logger.error('Auth forwarding failed [Error: %s, authUrl: %s]',
+          String(error), authUrl);
+        statsd.increment('authentication.forwarding.failure.openid_error');
+        res.status(500).render('error', { title: req.gettext('Error') });
+      } else {
+        statsd.increment('authentication.forwarding.success');
+        req.session.claimed = req.query.email;
+        res.redirect(authUrl);
+      }
+    });
   });
-});
 
 app.get('/authenticate/verify', function (req, res) {
+  // Check input precondition:
+  // Session should include a valid email address that the user is claiming.
+  if (!email.valid(req.session.claimed)) {
+    logger.error('Invalid or missing claimed email');
+    statsd.increment('authentication.openid.failure.no_claim');
+    return res.status(400).render('error',
+      { title: req.gettext('Error'), errorInfo: 'Invalid or missing claim.' });
+  }
+
   openidRP.verifyAssertion(req, function (error, result) {
     if (error && error.message === 'Authentication cancelled') {
       logger.info('User cancelled during openid dialog');
       statsd.increment('authentication.openid.failure.cancelled');
       res.render('authenticate_finish',
         { title: req.gettext('Loading...'), success: false });
-    } else if (error || !result.authenticated || !result.email) {
+    } else if (error || !result.authenticated || !email.valid(result.email)) {
       logger.error('OpenID verification failed: %s', String(error));
       statsd.increment('authentication.openid.failure.bad_result');
       res.status(403).render('error',
         { title: req.gettext('Error'), errorInfo: error.message });
-    } else if (compare(req.session.claimed, result.email)) {
+    } else if (email.compare(req.session.claimed, result.email)) {
       statsd.increment('authentication.openid.success');
       req.session.proven = result.email;
       res.render('authenticate_finish',

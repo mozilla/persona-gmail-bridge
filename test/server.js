@@ -262,14 +262,14 @@ describe('HTTP Endpoints', function () {
     });
 
     describe('malformed requests', function () {
-      it.skip('should fail on GET for non-google addresses', function (done) {
+      it('should fail on GET for non-google addresses', function (done) {
         var options = {
           qs: { email: 'hikingfan@example.invalid' },
           followRedirect: false
         };
 
         request.get(url, options, function (err, res) {
-          assert.equal(res.statusCode, 500);
+          assert.equal(res.statusCode, 400);
           done(err);
         });
       });
@@ -281,7 +281,7 @@ describe('HTTP Endpoints', function () {
         };
 
         request.get(url, options, function (err, res) {
-          assert.equal(res.statusCode, 500);
+          assert.equal(res.statusCode, 400);
           done(err);
         });
       });

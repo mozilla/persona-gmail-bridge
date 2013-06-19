@@ -29,7 +29,8 @@
     "lockdown": "0.0.4",
     "node-statsd": "0.0.7",
     "openid": "0.5.2",
-    "winston": "0.7.1"
+    "winston": "0.7.1",
+    "validator": "1.2.0"
   },
   "devDependencies": {
     "awsbox": "0.4.5",
