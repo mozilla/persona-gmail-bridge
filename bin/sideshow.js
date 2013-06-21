@@ -67,7 +67,7 @@ if (IS_SECURE) {
   app.use(function(req, res, next) {
     req.connection.proxySecure = true;
     res.setHeader('Strict-Transport-Security',
-        'max-age=1088640; includeSubdomains');
+        'max-age=10886400; includeSubdomains');
     next();
   });
 }
