@@ -2,6 +2,9 @@
   "JSONSelect": {
     "0.4.0": "a08edcc67eb3fcbe99ed630855344a0cf282bb8d"
   },
+  "amdefine": {
+    "0.0.5": "86b6e9470f8cde955ef7daa3cf5d544ba81aa3db"
+  },
   "ansi": {
     "0.1.2": "2627e29498f06e2a1c2ece9c21e28fd494430827"
   },
@@ -41,6 +44,9 @@
   "bytes": {
     "0.2.0": "aad33ec14e3dc2ca74e8e7d451f9ba053ad4f7a0"
   },
+  "character-parser": {
+    "1.0.2": "55384d6afcf8c6b9dd483e8347646a790e4545e7"
+  },
   "cjson": {
     "0.2.1": "73cd8aad65d9e1505f9af1744d3b79c1527682a5"
   },
@@ -61,7 +67,8 @@
     "0.0.4": "2d1a43347dbe9515a4a2796732e5b88473840b22"
   },
   "commander": {
-    "0.6.1": "fa68a14f6a945d54dbbe50d8cdb3320e9e3b1a06"
+    "0.6.1": "fa68a14f6a945d54dbbe50d8cdb3320e9e3b1a06",
+    "1.1.1": "50d1651868ae60eccff0a2d9f34595376bc6b041"
   },
   "commondir": {
     "0.0.1": "89f00fdcd51b519c578733fec563e6a6da7f5be2"
@@ -102,6 +109,15 @@
   "crypto-browserify": {
     "0.2.3": "c98141505d90e31a1e456cb97343dc3b0f4a1a2a"
   },
+  "css": {
+    "1.0.8": "9386811ca82bccc9ee7fb5a732b1e2a317c8a3e7"
+  },
+  "css-parse": {
+    "1.0.4": "38b0503fbf9da9f54e9c1dbda60e145c77117bdd"
+  },
+  "css-stringify": {
+    "1.0.5": "b0d042946db2953bb9d292900a6cb5f6d0122031"
+  },
   "ctype": {
     "0.5.2": "fe8091d468a373a0b0c9ff8bbfb3425c00973a1d"
   },
@@ -128,13 +144,15 @@
     "0.8.4": "52e61755e5e97fbc5aeeb07df49a4e062bff30d5"
   },
   "escodegen": {
-    "0.0.4": "170b87ec38e47f160062c836a4beef14617fbc4b"
+    "0.0.23": "9acf978164368e42276571f18839c823b3a844df"
   },
   "esprima": {
-    "0.9.9": "1b90925c975d632d7282939c3bb9c3a423c30490"
+    "0.9.9": "1b90925c975d632d7282939c3bb9c3a423c30490",
+    "1.0.3": "7bdb544f95526d424808654d3b8fbe928650c0fe"
   },
   "estraverse": {
-    "1.1.1": "657fff768decd7e329e2454534897b70dc701ebf"
+    "0.0.4": "01a0932dfee574684a598af5a67c3bf9b6428db2",
+    "1.1.2-1": "28ff59bb3cf1272a2027e1c1541f94b23226b311"
   },
   "express": {
     "3.2.6": "d8a9fe065adc23c5b41ec2c689c672b261430ffc"
@@ -191,13 +209,17 @@
     "0.9.11": "9e882714572315e6790a5d0a7955efff1f19e653"
   },
   "i18n-abide": {
-    "0.0.8beta7": "c7dfb0897790cba7939e5ac8849b371aa2e8eb7f"
+    "0.0.8beta8": "b5cc207ded36ff59d74eff6c955dbbd5032762ba"
   },
   "inherits": {
     "1.0.0": "38e1975285bf1f7ba9c84da102bb12771322ac48"
   },
+  "is-promise": {
+    "1.0.0": "b998d17551f16f69f7bd4828f58f018cc81e064f"
+  },
   "jade": {
-    "0.26.3": "8f10d7977d8d79f2f6ff862a81b0513ccb25686c"
+    "0.26.3": "8f10d7977d8d79f2f6ff862a81b0513ccb25686c",
+    "0.30.0": "9ea816da61bea6fef4709b4d9f6b442f1e205ba3"
   },
   "jshint": {
     "2.1.3": "2392e062f7f080fc5ee6d6db8164b6c81b1abaaf"
@@ -207,10 +229,13 @@
     "4.0.0": "77c271aaea54302e68efeaccb56abbf06a9b1a54"
   },
   "jsxgettext": {
-    "0.0.6": "f99af552b5648522cfb0f420715acd4d8c600821"
+    "0.1.2": "d551df2165ab25eaf5c00c540dc660d95e231654"
   },
   "jwcrypto": {
     "0.4.4": "acc75cb25aa1b038b71c49b4b054589035804d17"
+  },
+  "keypress": {
+    "0.1.0": "4a3188d4291b66b4f65edb99f806aa9ae293592a"
   },
   "lockdown": {
     "0.0.4": "9ffd6fde34d3877ae03cd4c308aff215fef030d3"
@@ -239,6 +264,9 @@
   },
   "moment": {
     "1.7.2": "e66be344be2e9ec1d12f1e16a8ca49bf63417f4f"
+  },
+  "monocle": {
+    "0.1.50": "9a7cbd0ccc10de95fd78a04b9beb2482ae4940b7"
   },
   "ms": {
     "0.3.0": "03edc348d613e66a56486cfdac53bcbe899cbd61"
@@ -296,6 +324,9 @@
   "pkginfo": {
     "0.3.0": "726411401039fe9b009eea86614295d5f3a54276"
   },
+  "promise": {
+    "2.0.0": "46648aa9d605af5d2e70c3024bf59436da02b80e"
+  },
   "qs": {
     "0.5.6": "31b1ad058567651c526921506b9a8793911a0384",
     "0.6.5": "294b268e4b0d4250f6dde19b3b8b34935dff14ef"
@@ -308,6 +339,9 @@
   },
   "read-package-json": {
     "0.4.1": "a0e917cce8333444889543de9db2b1a4606baaa2"
+  },
+  "readdirp": {
+    "0.2.4": "469a896cce3fa70b856fbbd10e3475760060008e"
   },
   "relative-date": {
     "1.1.1": "75c97c5446fa1146c1d250c47ca3629fb9a2e764"
@@ -346,6 +380,9 @@
     "0.1.4": "5ef481b951a7b29affdf4afd7f26838fc1120f84",
     "0.2.4": "fb885f18b0f3aad189f824862536bceeec750900"
   },
+  "source-map": {
+    "0.1.23": "079f8fa7867f318b48cf5d4c716ab6d4dc859be9"
+  },
   "stack-trace": {
     "0.0.6": "1e719bd6a2629ff09c189e17a9ef902a94fc5db0"
   },
@@ -358,6 +395,9 @@
   "tmp": {
     "0.0.16": "704ea0513c15375389ef5b6dde865730528f2245"
   },
+  "transformers": {
+    "2.0.1": "352131dfceb93a7532dc7535a4f142510435a394"
+  },
   "tunnel-agent": {
     "0.2.0": "6853c2afb1b2109e45629e492bde35f459ea69e8",
     "0.3.0": "ad681b68f5321ad2827c4cfb1b7d5df2cfe942ee"
@@ -367,7 +407,8 @@
   },
   "uglify-js": {
     "1.0.6": "f0d3aafd463f26a437b9ebc19f4947ab7e8078aa",
-    "1.2.6": "d354b2d3c1cf10ebc18fa78c11a28bdd9ce1580d"
+    "1.2.6": "d354b2d3c1cf10ebc18fa78c11a28bdd9ce1580d",
+    "2.2.5": "a6e02a70d839792b9780488b7b8b184c095c99c7"
   },
   "underscore": {
     "1.1.7": "40bab84bad19d230096e8d6ef628bff055d83db0",
