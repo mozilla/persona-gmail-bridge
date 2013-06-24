@@ -58,6 +58,19 @@ describe('HTTP Endpoints', function () {
     });
   });
 
+  describe('/ver.txt', function () {
+    var url = BASE_URL + '/ver.txt';
+    var options = { followRedirect: false };
+
+    it('should redirect to the static ver.txt', function(done) {
+      request.get(url, options, function (err, res) {
+        assert.equal(res.statusCode, 302);
+        assert.equal(res.headers.location, '/static/ver.txt');
+        done(err);
+      });
+    });
+  });
+
   describe('/__heartbeat__', function () {
     var url = BASE_URL + '/__heartbeat__';
     var res;

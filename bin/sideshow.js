@@ -144,6 +144,10 @@ app.get('/', function (req, res) {
   res.redirect(config.get('personaUrl'));
 });
 
+app.get('/ver.txt', function (req, res) {
+  res.redirect('/static/ver.txt');
+});
+
 app.get('/__heartbeat__', function (req, res) {
   openid.discover(googleEndpoint, true, function(err/*, providers*/) {
     if (err) {
