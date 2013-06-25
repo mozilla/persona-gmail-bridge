@@ -44,7 +44,7 @@ var openidRP = new openid.RelyingParty(
   [ // List of extensions to enable and include
     new openid.AttributeExchange(
       {'http://axschema.org/contact/email': 'required'}),
-    new openid.UserInterface({mode: 'popup'})
+    new openid.UserInterface({mode: 'popup', icon: true})
   ]);
 const googleEndpoint = 'https://www.google.com/accounts/o8/id';
 
@@ -78,6 +78,9 @@ app.use(csp([
   '/authenticate/forward',
   '/authenticate/verify'
 ]));
+
+app.use(express.favicon(
+  path.join(__dirname, '..', 'static', 'i', 'favicon.ico')));
 
 app.use(clientSessions({
   cookieName: 'session',
