@@ -2,3 +2,4 @@ node_modules/
 var/
 npm-debug.log
 rpmbuild/
+locale/
