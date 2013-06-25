@@ -129,7 +129,7 @@ app.use(i18n.abide({
   supported_languages: config.get('localeList'),
   default_lang: config.get('localeDefault'),
   debug_lang: config.get('localeDebug'),
-  translation_directory: config.get('localePath')
+  translation_directory: config.get('localeDir')
 }));
 
 app.use(fonts.setup({
@@ -229,27 +229,30 @@ app.post('/provision/certify', validate({
   });
 
 app.get('/authenticate', function (req, res) {
-  res.render('authenticate', { title: req.gettext('Loading...') });
+  var gettext = req.gettext;
+  res.render('authenticate', { title: gettext('Loading...') });
 });
 
 app.get('/authenticate/forward', validate({ email: 'gmail' }),
   function (req, res) {
+    var gettext = req.gettext;
     // if there is no email address, a valid email wasn't sent
     if (!req.query.email) {
       logger.error('Authentication forwarding attempted with bad input');
       statsd.increment('authentication.forwarding.failure.bad_input');
       return res.status(400).render('error', {
-        title: req.gettext('Error'),
+        title: gettext('Error'),
         errorInfo: 'Invalid or missing email.'
       });
     }
 
     openidRP.authenticate(googleEndpoint, false, function (error, authUrl) {
+      var gettext = req.gettext;
       if (error || !authUrl) {
         logger.error('Auth forwarding failed [Error: %s, authUrl: %s]',
           String(error), authUrl);
         statsd.increment('authentication.forwarding.failure.openid_error');
-        res.status(500).render('error', { title: req.gettext('Error') });
+        res.status(500).render('error', { title: gettext('Error') });
       } else {
         statsd.increment('authentication.forwarding.success');
         req.session.claimed = req.query.email;
@@ -259,13 +262,14 @@ app.get('/authenticate/forward', validate({ email: 'gmail' }),
   });
 
 app.get('/authenticate/verify', function (req, res) {
+  var gettext = req.gettext;
   // Check input precondition:
   // Session should include a valid email address that the user is claiming.
   if (!email.valid(req.session.claimed)) {
     logger.error('Invalid or missing claimed email');
     statsd.increment('authentication.openid.failure.no_claim');
     return res.status(400).render('error',
-      { title: req.gettext('Error'), errorInfo: 'Invalid or missing claim.' });
+      { title: gettext('Error'), errorInfo: 'Invalid or missing claim.' });
   }
 
   openidRP.verifyAssertion(req, function (error, result) {
@@ -273,22 +277,22 @@ app.get('/authenticate/verify', function (req, res) {
       logger.info('User cancelled during openid dialog');
       statsd.increment('authentication.openid.failure.cancelled');
       res.render('authenticate_finish',
-        { title: req.gettext('Loading...'), success: false });
+        { title: gettext('Loading...'), success: false });
     } else if (error || !result.authenticated || !email.valid(result.email)) {
       logger.error('OpenID verification failed: %s', String(error));
       statsd.increment('authentication.openid.failure.bad_result');
       res.status(403).render('error',
-        { title: req.gettext('Error'), errorInfo: error.message });
+        { title: gettext('Error'), errorInfo: error.message });
     } else if (email.compare(req.session.claimed, result.email)) {
       statsd.increment('authentication.openid.success');
       req.session.proven = result.email;
       res.render('authenticate_finish',
-        { title: req.gettext('Loading...'), success: true });
+        { title: gettext('Loading...'), success: true });
     } else {
       logger.info('User accounts do no match');
       statsd.increment('authentication.openid.failure.mismatch');
       res.status(409).render('error_mismatch',
-        { title: req.gettext("Accounts don't match"),
+        { title: gettext("Accounts don't match"),
           claimed: req.session.claimed, proven: result.email });
     }
   });
