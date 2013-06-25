@@ -38,13 +38,13 @@ keys(function() {
 
 var openidRP = new openid.RelyingParty(
   config.get('publicUrl') + '/authenticate/verify', // Verification URL
-  null, // Realm
+  config.get('openidRealm'), // Realm
   true, // Use stateless verification
   false, // Strict mode
   [ // List of extensions to enable and include
     new openid.AttributeExchange(
       {'http://axschema.org/contact/email': 'required'}),
-    new openid.UserInterface({mode: 'popup', icon: true})
+    new openid.UserInterface({mode: 'popup'})
   ]);
 const googleEndpoint = 'https://www.google.com/accounts/o8/id';
 
