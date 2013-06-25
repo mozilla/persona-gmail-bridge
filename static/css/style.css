@@ -53,6 +53,8 @@ button, .button {
     text-shadow: 0 1px rgba(0, 0, 0, 0.5);
     white-space: nowrap;
     font-size: 14px;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 button:hover,
