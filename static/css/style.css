@@ -53,6 +53,8 @@ button, .button {
     text-shadow: 0 1px rgba(0, 0, 0, 0.5);
     white-space: nowrap;
     font-size: 14px;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 button:hover,
@@ -132,10 +134,10 @@ header h1 a {
 }
 
 .container {
-    bottom: 61px;
+    bottom: 0;
     display: block;
     left: 0;
-    overflow: hidden;
+    overflow: auto;
     position: absolute;
     right: 0;
     top: 61px;
@@ -150,7 +152,7 @@ header h1 a {
 
 .table .vertical {
     display: table-cell;
-    padding: 0 20px;
+    padding: 10px 20px 20px;
     vertical-align: middle;
 }
 
