@@ -129,7 +129,7 @@ app.use(i18n.abide({
   supported_languages: config.get('localeList'),
   default_lang: config.get('localeDefault'),
   debug_lang: config.get('localeDebug'),
-  translation_directory: config.get('localePath')
+  translation_directory: config.get('localeDir')
 }));
 
 app.use(fonts.setup({
