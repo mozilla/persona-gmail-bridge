@@ -38,7 +38,7 @@ keys(function() {
 
 var openidRP = new openid.RelyingParty(
   config.get('publicUrl') + '/authenticate/verify', // Verification URL
-  null, // Realm
+  config.get('openidRealm'), // Realm
   true, // Use stateless verification
   false, // Strict mode
   [ // List of extensions to enable and include
