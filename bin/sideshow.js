@@ -26,8 +26,9 @@ const keys = require('../lib/keys');
 const statsd = require('../lib/statsd');
 const validate = require('../lib/validate');
 
-const IS_SECURE = url.parse(config.get('publicUrl')).protocol === 'https:';
-if (config.get('secret') === config.default('secret')) {
+const USE_TLS = url.parse(config.get('server.publicUrl')).protocol === 'https:';
+
+if (config.get('session.secret') === config.default('session.secret')) {
   logger.warn('*** Using ephemeral secret for signing cookies. ***');
 }
 
@@ -37,8 +38,8 @@ keys(function() {
 });
 
 var openidRP = new openid.RelyingParty(
-  config.get('publicUrl') + '/authenticate/verify', // Verification URL
-  config.get('openidRealm'), // Realm
+  config.get('server.publicUrl') + '/authenticate/verify', // Verification URL
+  config.get('server.openidRealm'), // Realm
   true, // Use stateless verification
   false, // Strict mode
   [ // List of extensions to enable and include
@@ -55,7 +56,7 @@ const app = express();
 app.set('views', path.join(__dirname, '..', 'views'));
 app.set('view engine', 'ejs');
 
-app.locals.personaUrl = config.get('personaUrl');
+app.locals.personaUrl = config.get('server.personaUrl');
 app.locals.errorInfo = undefined;
 
 // -- Express Middleware --
@@ -63,7 +64,7 @@ app.locals.errorInfo = undefined;
 app.use(statsd.middleware());
 app.use(express.json());
 
-if (IS_SECURE) {
+if (USE_TLS) {
   app.use(function(req, res, next) {
     req.connection.proxySecure = true;
     res.setHeader('Strict-Transport-Security',
@@ -84,11 +85,11 @@ app.use(express.favicon(
 
 app.use(clientSessions({
   cookieName: 'session',
-  secret: config.get('secret'),
-  duration: config.get('sessionDuration'),
+  secret: config.get('session.secret'),
+  duration: config.get('session.duration'),
   cookie: {
-    maxAge: config.get('sessionDuration'),
-    secure: IS_SECURE
+    maxAge: config.get('session.duration'),
+    secure: USE_TLS
   }
 }));
 
@@ -129,22 +130,22 @@ app.use(caching.prevent([
 ]));
 
 app.use(i18n.abide({
-  supported_languages: config.get('localeList'),
-  default_lang: config.get('localeDefault'),
-  debug_lang: config.get('localeDebug'),
-  translation_directory: config.get('localeDir')
+  supported_languages: config.get('locale.list'),
+  default_lang: config.get('locale.default'),
+  debug_lang: config.get('locale.debug'),
+  translation_directory: config.get('locale.dir')
 }));
 
 app.use(fonts.setup({
   fonts: [ opensans ],
-  allow_origin: config.get('publicUrl'),
+  allow_origin: config.get('server.publicUrl'),
   maxage: 1000 * 24 * 60 * 60 * 180 // 180 days
 }));
 
 // -- Express Routes --
 
 app.get('/', function (req, res) {
-  res.redirect(config.get('personaUrl'));
+  res.redirect(config.get('server.personaUrl'));
 });
 
 app.get('/ver.txt', function (req, res) {
@@ -206,14 +207,14 @@ app.post('/provision/certify', validate({
       return res.send(400, "Pubkey isn't valid.");
     }
     if (req.body.duration === undefined) {
-      req.body.duration = config.get('certDefaultDuration');
+      req.body.duration = config.get('cert.minDuration');
     }
 
     keys(function(pubKey, privKey) {
       cert.sign({
         privkey: privKey,
-        hostname: config.get('issuer'),
-        duration: Math.min(req.body.duration, config.get('certMaxDuration')),
+        hostname: config.get('cert.domain'),
+        duration: Math.min(req.body.duration, config.get('cert.maxDuration')),
         pubkey: req.body.pubkey,
         email: req.body.email // use user supplied email, not normalized email
       }, function onCert(err, cert) {
@@ -302,10 +303,12 @@ app.use('/static', express.static(path.join(__dirname, '..', 'static')));
 // -- Module Setup --
 
 if (require.main === module) {
-  var server = app.listen(config.get('port'), config.get('host'), function() {
-    var addy = server.address();
-    logger.info("sideshow running on http://" + addy.address + ":" + addy.port);
-  });
+  var server = app.listen(config.get('server.port'), config.get('server.host'),
+    function() {
+      var a = server.address();
+      logger.info("sideshow running on http://" + a.address + ":" + a.port);
+    }
+  );
 }
 
 module.exports = app;

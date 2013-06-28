@@ -4,7 +4,7 @@ const config = require('../../lib/config');
 
 const options = {
   cookieName: 'session',
-  secret: config.get('secret')
+  secret: config.get('session.secret')
 };
 
 module.exports = function cookie(contents) {
