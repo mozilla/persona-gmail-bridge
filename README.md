@@ -42,12 +42,27 @@ Example:
 
     CONFIG_FILES='/app/foo.json,/app/bar.json' npm start
 
-[lib/config.js]: https://github.com/callahad/sideshow/blob/master/lib/config.js
+Local testing shouldn't require changing any settings.
+
+Production deployments __must__ change:
+
+- `server.publicUrl` and `server.personaUrl`
+- `cert.pubKeyPath` and `cert.privKeyPath`
+- `session.secret`
+
+Production deployments __may__ want to change:
+
+- `server.port` and `server.host`
+- `logPath`
+- `proxy.host` and `proxy.port`
+- `statsd.enabled`, `statsd.host`, and `statsd.port`
+
+[lib/config.js]: https://github.com/mozilla/browserid-sideshow/blob/master/lib/config.js
 
 StatsD
 ------
 
-By default, Sideshow reports statistics via [statsd](https://github.com/etsy/statsd):
+If enabled, Sideshow can report statistics via [statsd](https://github.com/etsy/statsd):
 
 ### Counters
 
