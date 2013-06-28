@@ -62,7 +62,7 @@ Production deployments __may__ want to change:
 StatsD
 ------
 
-By default, Sideshow reports statistics via [statsd](https://github.com/etsy/statsd):
+If enabled, Sideshow can report statistics via [statsd](https://github.com/etsy/statsd):
 
 ### Counters
 
