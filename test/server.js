@@ -52,7 +52,7 @@ describe('HTTP Endpoints', function () {
     it('should redirect to the Persona homepage', function(done) {
       request.get(url, options, function (err, res) {
         assert.equal(res.statusCode, 302);
-        assert.equal(res.headers.location, config.get('personaUrl'));
+        assert.equal(res.headers.location, config.get('server.personaUrl'));
         done(err);
       });
     });
