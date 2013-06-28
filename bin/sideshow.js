@@ -131,7 +131,7 @@ app.use(caching.prevent([
 
 app.use(i18n.abide({
   supported_languages: config.get('locale.list'),
-  default_lang: config.get('locale.default'),
+  default_lang: config.get('locale.base'),
   debug_lang: config.get('locale.debug'),
   translation_directory: config.get('locale.dir')
 }));
