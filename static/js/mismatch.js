@@ -37,7 +37,8 @@
       }
       tryAgain.disabled = true;
       onFrameLoad('https://accounts.google.com/Logout', function() {
-        navigator.id.raiseAuthenticationFailure();
+        var email = encodeURIComponent(tryAgain.getAttribute('data-claimed'));
+        window.location = '/authenticate/forward?email=' + email;
       });
     };
   }
