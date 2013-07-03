@@ -6,7 +6,7 @@
        ['<b>' + escape(claimed) + '</b>']) %></p>
 <p>
   <button id="cancel">Go back</button>
-  <button id="tryAgain"><%= gettext("Force Google logout") %></button>
+  <button id="tryAgain" data-claimed="<%= claimed %>"><%= gettext("Force Google logout") %></button>
 </p>
 <script src="<%= personaUrl %>/authentication_api.js"></script>
 <script src="/static/js/cancel_button.js"></script>
