@@ -24,7 +24,10 @@ sideshow: BrowserID Bridging to Google.
 %build
 npm install --production
 export PATH=$PWD/node_modules/.bin:$PATH
+mkdir -p static/i18n/en_US
+compile-json locale/ static/i18n/
 git show-branch $GIT_HASH > static/ver.txt
+echo "locale svn r$SVN_REVISION" >> /static/ver.txt
 
 %install
 rm -rf %{buildroot}
