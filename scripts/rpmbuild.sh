@@ -25,7 +25,8 @@ rm -rf rpmbuild
 mkdir -p rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/BUILD
 
 export GIT_HASH=$(git rev-parse --verify --quiet --short $VER);
-export SVN_REVISION="$(svn info locale/ | sed -n -e "s,^Revision: ,,p")"
+# export SVN_REVISION="$(svn info locale/ | sed -n -e "s,^Revision: ,,p")"
+SVN_REVISION="118029"
 export SIDESHOW_VER="$(echo $VER | sed 's/-/_/g').$GIT_HASH.$SVN_REVISION"
 
 if [ -z $GIT_HASH ]; then
