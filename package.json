@@ -24,7 +24,7 @@
     "convict": "0.3.2",
     "ejs": "0.8.4",
     "express": "3.2.6",
-    "i18n-abide": "0.0.8beta9",
+    "i18n-abide": "0.0.8",
     "jwcrypto": "0.4.4",
     "lockdown": "0.0.4",
     "node-statsd": "0.0.7",
