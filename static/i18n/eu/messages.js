@@ -1,0 +1,36 @@
+;var json_locale_data = {
+   "messages": {
+      "": {
+         "Project-Id-Version": " PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2012-06-24 09:50+0200\nPO-Revision-Date: 2013-06-28 23:22+0200\nLast-Translator: Julen <julenx@gmail.com>\nLanguage-Team: LANGUAGE <LL@li.org>\nLanguage: eu\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\nX-Generator: Pootle 2.1.6\n"
+      },
+      "Loading...": [
+         null,
+         "Kargatzen…"
+      ],
+      "Error": [
+         null,
+         "Errorea"
+      ],
+      "Accounts don't match": [
+         null,
+         "Kontuak ez datoz bat"
+      ],
+      "Something went wrong. Please try again later.": [
+         null,
+         "Zerbait gaizki joan da. Saiatu berriro mesedez."
+      ],
+      "You're currently signed into Google as %s.": [
+         null,
+         "Une honetan %s gisa saioa hasita duzu Googlen."
+      ],
+      "If you want to use %s, log out of Google and sign in again.": [
+         null,
+         "%s erabili nahi baduzu, amaitu saioa Googlen eta hasi saioa berriro."
+      ],
+      "Force Google logout": [
+         null,
+         "Behartu Google saio-amaiera"
+      ]
+   }
+}
+;

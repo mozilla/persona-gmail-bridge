@@ -209,7 +209,7 @@
     "0.9.11": "9e882714572315e6790a5d0a7955efff1f19e653"
   },
   "i18n-abide": {
-    "0.0.8beta9": "c6659ccdd3f030061572177e1d1a93da9e2affbd"
+    "0.0.8": "a7610465be083a21e1c2f52e2fd78503ee90dd29"
   },
   "inherits": {
     "1.0.0": "38e1975285bf1f7ba9c84da102bb12771322ac48"
@@ -381,7 +381,7 @@
     "0.2.4": "fb885f18b0f3aad189f824862536bceeec750900"
   },
   "source-map": {
-    "0.1.24": "5b533dd08948de2d8c3b002a9c31842cb1b35103"
+    "0.1.26": "4cce2dcb5fa02cfe1b4cf32cc83962b1b3997560"
   },
   "stack-trace": {
     "0.0.6": "1e719bd6a2629ff09c189e17a9ef902a94fc5db0"
