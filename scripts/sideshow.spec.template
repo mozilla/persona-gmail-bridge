@@ -3,7 +3,7 @@
 
 Name:          browserid-bridge-gmail
 Version:       %{version}
-Release:       1%{?dist}
+Release:       0.1.%{checkout}%{?dist}
 Summary:       BrowserID Identity Bridge for Gmail
 Packager:      Sean McArthur <smcarthur@mozilla.com>
 Group:         Development/Libraries

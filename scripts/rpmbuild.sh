@@ -27,7 +27,9 @@ mkdir -p rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/BUILD
 export GIT_HASH=$(git rev-parse --verify --quiet --short $VER);
 # export SVN_REVISION="$(svn info locale/ | sed -n -e "s,^Revision: ,,p")"
 export SVN_REVISION="118029"
-export SIDESHOW_VER="$(echo $VER | sed 's/-/_/g').$GIT_HASH.$SVN_REVISION"
+# export SIDESHOW_VER="$(echo $VER | sed 's/-/_/g').$GIT_HASH.$SVN_REVISION"
+export SIDESHOW_VER="0.9.2"
+export SIDESHOW_REL="20130718SHA${GIT_HASH}R${SVN_REVISION}"
 
 if [ -z $GIT_HASH ]; then
     echo >&2 "Unrecognized git reference: $VER"
@@ -45,4 +47,5 @@ sed "s/__VERSION__/$SIDESHOW_VER/g" scripts/sideshow.spec.template > /tmp/sidesh
 echo "Building Source RPM"
 rpmbuild --define "_topdir $PWD/rpmbuild" \
     --define "version $SIDESHOW_VER" \
+    --define "checkout $SIDESHOW_REL" \
     -ba /tmp/sideshow.spec
