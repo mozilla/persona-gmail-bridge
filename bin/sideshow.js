@@ -205,7 +205,7 @@ app.post('/provision/certify', validate({
     var isCorrectEmail = email.compare(req.body.email, req.session.proven);
 
     // trying to sign a cert? then kill this cookie while we're here.
-    req.session.reset(['_csrf']);
+    req.session.reset();
     if (!isCorrectEmail) {
       logger.error('Email not proven, will not sign certificate');
       statsd.increment('certification.failure.no_proof');
