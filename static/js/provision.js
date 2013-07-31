@@ -40,7 +40,6 @@
       }
 
       req.setRequestHeader('Accept', 'application/json;text/plain');
-      req.setRequestHeader('Connection', 'close');
 
       req.send(data || null);
     }
