@@ -8,7 +8,7 @@ Getting Started
 
 Running Sideshow is simple:
 
-1. `git clone https://github.com/callahad/sideshow.git`
+1. `git clone https://github.com/mozilla/browserid-sideshow.git`
 2. `cd sideshow`
 3. `npm install`
 4. `npm start`
