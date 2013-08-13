@@ -3,7 +3,7 @@
     "0.4.0": "a08edcc67eb3fcbe99ed630855344a0cf282bb8d"
   },
   "amdefine": {
-    "0.0.5": "86b6e9470f8cde955ef7daa3cf5d544ba81aa3db"
+    "0.0.8": "34dc8c981e6acb3be1853bef8f0ec94a39d55ba0"
   },
   "ansi": {
     "0.1.2": "2627e29498f06e2a1c2ece9c21e28fd494430827"
@@ -181,14 +181,16 @@
     "1.1.1": "1f89623453123ef9623956e264c60bf4c3cf5ccf"
   },
   "glob": {
-    "3.2.1": "57af70ec73ba2323bfe3f29a067765db64c5d758"
+    "3.2.1": "57af70ec73ba2323bfe3f29a067765db64c5d758",
+    "3.2.6": "28c805b47bc6c19ba3059cbdf079b98ff62442f2"
   },
   "gobbledygook": {
     "0.0.3": "437bb23d3ade04dd26b49e7c21e4026c6b086234"
   },
   "graceful-fs": {
     "1.1.14": "07078db5f6377f6321fceaaedf497de124dc9465",
-    "1.2.1": "b35cc6e623576fc2a278cba12c00dda6a1758d2d"
+    "1.2.1": "b35cc6e623576fc2a278cba12c00dda6a1758d2d",
+    "1.2.3": "15a4806a57547cb2d2dbf27f42e89a8c3451b364"
   },
   "growl": {
     "1.7.0": "de2d66136d002e112ba70f3f10c31cf7c350b2da"
@@ -209,10 +211,11 @@
     "0.9.11": "9e882714572315e6790a5d0a7955efff1f19e653"
   },
   "i18n-abide": {
-    "0.0.8beta9": "c6659ccdd3f030061572177e1d1a93da9e2affbd"
+    "0.0.13": "50394e7e28651613f3b2075745ef819b1d4ebe9a"
   },
   "inherits": {
-    "1.0.0": "38e1975285bf1f7ba9c84da102bb12771322ac48"
+    "1.0.0": "38e1975285bf1f7ba9c84da102bb12771322ac48",
+    "2.0.0": "76c81b3b1c10ddee3a60bf2c247162bc369f8ba8"
   },
   "is-promise": {
     "1.0.0": "b998d17551f16f69f7bd4828f58f018cc81e064f"
@@ -238,7 +241,7 @@
     "0.1.0": "4a3188d4291b66b4f65edb99f806aa9ae293592a"
   },
   "lockdown": {
-    "0.0.4": "9ffd6fde34d3877ae03cd4c308aff215fef030d3"
+    "0.0.5": "6bbcc01b7d2a3894a712f135b2675a078ede24c7"
   },
   "lru-cache": {
     "2.3.0": "1cee12d5a9f28ed1ee37e9c332b8888e6b85412a"
@@ -290,10 +293,10 @@
     "1.5.2": "f4345448a853cfbd5c0d26320f2477ab0526fe2f"
   },
   "normalize-package-data": {
-    "0.1.6": "2503118c469c493ff030c5a9bafe82f4d371a566"
+    "0.1.7": "f216a318a868214892e89ad80a944cddc1a79615"
   },
   "npmlog": {
-    "0.0.2": "f0cf4b2c519950c00e91ba8e2868b62bf86254f6"
+    "0.0.4": "a12a7418606b7e0183a2851d97a8729b9a0f3837"
   },
   "nub": {
     "0.0.0": "b369bd32bdde66af59605c3b0520bc219dccc04f"
@@ -323,6 +326,9 @@
   },
   "pkginfo": {
     "0.3.0": "726411401039fe9b009eea86614295d5f3a54276"
+  },
+  "plist": {
+    "0.4.3": "812842a873aa57f98d0050bee6aaf3549b9d5798"
   },
   "promise": {
     "2.0.0": "46648aa9d605af5d2e70c3024bf59436da02b80e"
@@ -381,7 +387,7 @@
     "0.2.4": "fb885f18b0f3aad189f824862536bceeec750900"
   },
   "source-map": {
-    "0.1.24": "5b533dd08948de2d8c3b002a9c31842cb1b35103"
+    "0.1.27": "f114e06a8b5c05cbc51aa1fa600e728162455eda"
   },
   "stack-trace": {
     "0.0.6": "1e719bd6a2629ff09c189e17a9ef902a94fc5db0"
@@ -438,6 +444,12 @@
   },
   "xml2js": {
     "0.1.13": "438ff3b1d85a51ad659ffc2ebe83403e10c98722"
+  },
+  "xmlbuilder": {
+    "0.4.2": "1776d65f3fdbad470a08d8604cdeb1c4e540ff83"
+  },
+  "xmldom": {
+    "0.1.16": "cf2602832b1ab5c3e6813fca08fe70196ba15e8c"
   },
   "yamlparser": {
     "0.0.2": "32393e6afc70c8ca066b6650ac6738b481678ebc"
