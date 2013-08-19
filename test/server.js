@@ -16,7 +16,8 @@ const urlModule = require('url');
 const bidCrypto = require('browserid-crypto');
 // Fixme: don't use global cookie jar
 const request = require('request').defaults({jar: true});
-const openid = require('openid');
+const oauth = require('../lib/oauth');
+const google = require('../lib/google');
 
 const app = require('../bin/persona-gmail-bridge');
 const mockid = require('./lib/mockid');
@@ -34,14 +35,13 @@ describe('HTTP Endpoints', function () {
   var server;
 
   before(function (done) {
-    app.setOpenIDRP(mockid({
-      url: 'http://openid.example?foo=bar',
+    google.setGoogleApis(mockid({
+      url: 'http://oauth.example',
       result: {
         authenticated: true,
         email: TEST_EMAIL
       }
     }));
-
     server = app.listen(3033, undefined, undefined, done);
   });
 
@@ -81,14 +81,9 @@ describe('HTTP Endpoints', function () {
     var body;
 
     before(function (done) {
-      var discover = openid.discover;
-      openid.discover = function(a, b, cb) {
-        cb(null, [{}]);
-      };
       request.get(url, function (err, _res, _body) {
         res = _res;
         body = _body;
-        openid.discover = discover;
         done(err);
       });
     });
@@ -296,17 +291,8 @@ describe('HTTP Endpoints', function () {
         assert.equal(res.statusCode, 302);
       });
 
-      it('should redirect to the OpenID endpoint', function () {
-        var location = urlModule.parse(res.headers.location);
-        assert.equal(location.host, 'openid.example');
-      });
-
-      it('should acknowledge pending OpenID deprecation', function () {
-        var location = urlModule.parse(res.headers.location, true);
-        // Suppress camelCase warning
-        /* jshint -W106 */
-        assert.equal(location.query.openid_shutdown_ack, '2015-04-20');
-        /* jshint +W106 */
+      it('should redirect to the OAuth endpoint', function () {
+        assert.equal(res.headers.location, 'http://oauth.example');
       });
     });
 
