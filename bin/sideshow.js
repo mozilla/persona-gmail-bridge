@@ -11,7 +11,6 @@ const url = require('url');
 
 const express = require('express');
 const i18n = require('i18n-abide');
-const openid = require('openid');
 const clientSessions = require('client-sessions');
 const fonts = require('connect-fonts');
 const opensans = require('connect-fonts-opensans');
@@ -26,6 +25,7 @@ const keys = require('../lib/keys');
 const statsd = require('../lib/statsd');
 const validate = require('../lib/validate');
 const xframe = require('../lib/xframe');
+const google = require('../lib/google');
 
 const USE_TLS = url.parse(config.get('server.publicUrl')).protocol === 'https:';
 
@@ -37,18 +37,6 @@ if (config.get('session.secret') === config.default('session.secret')) {
 keys(function() {
   logger.debug('*** Keys loaded. ***');
 });
-
-var openidRP = new openid.RelyingParty(
-  config.get('server.publicUrl') + '/authenticate/verify', // Verification URL
-  config.get('server.openidRealm'), // Realm
-  true, // Use stateless verification
-  false, // Strict mode
-  [ // List of extensions to enable and include
-    new openid.AttributeExchange(
-      {'http://axschema.org/contact/email': 'required'}),
-    new openid.UserInterface({mode: 'popup'})
-  ]);
-const googleEndpoint = 'https://www.google.com/accounts/o8/id';
 
 const app = express();
 
@@ -158,7 +146,7 @@ app.get('/ver.txt', function (req, res) {
 });
 
 app.get('/__heartbeat__', function (req, res) {
-  openid.discover(googleEndpoint, true, function(err/*, providers*/) {
+  google.discover(function(err) {
     if (err) {
       return res.status(500).end('bad');
     }
@@ -253,7 +241,7 @@ app.get('/authenticate/forward', validate({ email: 'gmail' }),
       });
     }
 
-    openidRP.authenticate(googleEndpoint, false, function (error, authUrl) {
+    google.authenticate(req.query.email, function(error, authUrl) {
       if (error || !authUrl) {
         logger.error('Auth forwarding failed [Error: %s, authUrl: %s]',
           String(error), authUrl);
@@ -277,7 +265,8 @@ app.get('/authenticate/verify', function (req, res) {
       { title: req.gettext('Error'), errorInfo: 'Invalid or missing claim.' });
   }
 
-  openidRP.verifyAssertion(req, function (error, result) {
+  google.verifyAssertion(req, function (error, result) {
+    console.log(result);
     if (error && error.message === 'Authentication cancelled') {
       logger.info('User cancelled during openid dialog');
       statsd.increment('authentication.openid.failure.cancelled');
@@ -321,7 +310,3 @@ if (require.main === module) {
 
 module.exports = app;
 
-// expose openidRP so we can mock in tests
-app.setOpenIDRP = function setOpenIDRP(rp) {
-  openidRP = rp;
-};
