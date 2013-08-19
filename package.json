@@ -9,7 +9,8 @@
   },
   "author": "Dan Callahan <dan.callahan@gmail.com> (http://dancallahan.info)",
   "contributors": [
-    "Sean McArthur <sean.monstar@gmail.com> (http://seanmonstar.com)"
+    "Sean McArthur <sean.monstar@gmail.com> (http://seanmonstar.com)",
+    "Shane Tomlinson <stomlinson@mozilla.com> (https://shanetomlinson.com)"
   ],
   "license": "MPL 2.0",
   "scripts": {
@@ -26,10 +27,10 @@
     "csurf": "1.6.3",
     "ejs": "1.0.0",
     "express": "4.10.4",
+    "googleapis": "1.1.1",
     "i18n-abide": "0.0.22",
     "morgan": "1.5.0",
     "node-statsd": "0.1.0",
-    "openid": "0.5.9",
     "serve-favicon": "2.1.7",
     "validator": "3.22.2",
     "winston": "0.8.3"
