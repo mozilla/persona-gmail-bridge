@@ -13,7 +13,7 @@ const assert = require('assert');
 
 const jwcrypto = require('jwcrypto');
 const request = require('request');
-const openid = require('openid');
+const google = require('../lib/google');
 
 const app = require('../bin/sideshow');
 const mockid = require('./lib/mockid');
@@ -30,14 +30,13 @@ describe('HTTP Endpoints', function () {
   var server;
 
   before(function (done) {
-    app.setOpenIDRP(mockid({
-      url: 'http://openid.example',
+    app.setGoogleApis(mockid({
+      url: 'http://oauth.example',
       result: {
         authenticated: true,
         email: TEST_EMAIL
       }
     }));
-
     server = app.listen(3033, undefined, undefined, done);
   });
 
@@ -77,14 +76,9 @@ describe('HTTP Endpoints', function () {
     var body;
 
     before(function (done) {
-      var discover = openid.discover;
-      openid.discover = function(a, b, cb) {
-        cb(null, [{}]);
-      };
       request.get(url, function (err, _res, _body) {
         res = _res;
         body = _body;
-        openid.discover = discover;
         done(err);
       });
     });
@@ -287,8 +281,8 @@ describe('HTTP Endpoints', function () {
         assert.equal(res.statusCode, 302);
       });
 
-      it('should redirect to the OpenID endpoint', function () {
-        assert.equal(res.headers.location, 'http://openid.example');
+      it('should redirect to the OAuth endpoint', function () {
+        assert.equal(res.headers.location, 'http://oauth.example');
       });
     });
 

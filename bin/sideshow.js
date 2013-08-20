@@ -266,7 +266,6 @@ app.get('/authenticate/verify', function (req, res) {
   }
 
   google.verifyAssertion(req, function (error, result) {
-    console.log(result);
     if (error && error.message === 'Authentication cancelled') {
       logger.info('User cancelled during openid dialog');
       statsd.increment('authentication.openid.failure.cancelled');
@@ -309,4 +308,12 @@ if (require.main === module) {
 }
 
 module.exports = app;
+
+/**
+ * Sets the google apis interface for testing
+ */
+module.exports.setGoogleApis = function(googleapis) {
+  google.setGoogleApis(googleapis);
+};
+
 
