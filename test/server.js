@@ -13,6 +13,7 @@ const assert = require('assert');
 
 const jwcrypto = require('jwcrypto');
 const request = require('request');
+const oauth = require('../lib/oauth');
 const google = require('../lib/google');
 
 const app = require('../bin/sideshow');
@@ -30,7 +31,7 @@ describe('HTTP Endpoints', function () {
   var server;
 
   before(function (done) {
-    app.setGoogleApis(mockid({
+    google.setGoogleApis(mockid({
       url: 'http://oauth.example',
       result: {
         authenticated: true,
