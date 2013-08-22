@@ -17,10 +17,12 @@
     }
 
     function getRequest() {
-      if (window.ActiveXObject) {
-        return new window.ActiveXObject('Microsoft.XMLHTTP');
-      } else if (window.XMLHttpRequest) {
+      // From // http://blogs.msdn.com/b/ie/archive/2011/08/31/browsing-without-plug-ins.aspx
+      // Best Practice: Use Native XHR, if available
+      if (window.XMLHttpRequest) {
         return new XMLHttpRequest();
+      } else if (window.ActiveXObject) {
+        return new window.ActiveXObject('Microsoft.XMLHTTP');
       }
       return false;
     }
