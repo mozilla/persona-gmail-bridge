@@ -312,11 +312,3 @@ if (require.main === module) {
 
 module.exports = app;
 
-/**
- * Sets the google apis interface for testing
- */
-module.exports.setGoogleApis = function(googleapis) {
-  google.setGoogleApis(googleapis);
-};
-
-
