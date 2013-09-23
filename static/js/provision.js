@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-(function() {
+(function () {
   "use strict";
 
   function xhr(type, url, contentType, callback, data, csrf) {
@@ -13,11 +13,12 @@
         if (req.readyState === 4) {
           callback(req.responseText, req.status);
         }
-      }catch(e) {}
+      } catch (e) {}
     }
 
     function getRequest() {
-      // From // http://blogs.msdn.com/b/ie/archive/2011/08/31/browsing-without-plug-ins.aspx
+      // From http://blogs.msdn.com/b/ie/archive/2011/08/31
+      //                  /browsing-without-plug-ins.aspx
       // Best Practice: Use Native XHR, if available
       if (window.XMLHttpRequest) {
         return new XMLHttpRequest();
@@ -28,7 +29,7 @@
     }
 
     req = getRequest();
-    if(req) {
+    if (req) {
       req.onreadystatechange = stateChange;
 
       req.open(type, url, true);
@@ -49,7 +50,7 @@
 
   function request(options) {
     xhr(options.method, options.url, "application/json",
-        function(responseText, status) {
+        function (responseText, status) {
         if (status >= 200 && status < 300) {
           var respData = responseText;
           try {
@@ -76,14 +77,14 @@
   function withProvenEmail(email, callback) {
     GET({
       url: "/session",
-      success: function(r) {
+      success: function (r) {
         if (r.proven === email) {
           callback(r.csrf);
         } else {
           navigator.id.raiseProvisioningFailure();
         }
       },
-      error: function() {
+      error: function () {
         navigator.id.raiseProvisioningFailure();
       }
     });
@@ -91,8 +92,8 @@
 
 
   navigator.id.beginProvisioning(function (email, duration) {
-    withProvenEmail(email, function(csrf) {
-      navigator.id.genKeyPair(function(pubkey) {
+    withProvenEmail(email, function (csrf) {
+      navigator.id.genKeyPair(function (pubkey) {
         POST({
           url: '/provision/certify',
           data: {
@@ -101,11 +102,11 @@
             email: email
           },
           csrf: csrf,
-          success: function(r) {
+          success: function (r) {
             // all done!  woo!
             navigator.id.registerCertificate(r.cert);
           },
-          error: function() {
+          error: function () {
             navigator.id.raiseProvisioningFailure();
           }
         });
