@@ -28,8 +28,8 @@ export GIT_HASH=$(git rev-parse --verify --quiet --short $VER);
 # export SVN_REVISION="$(svn info locale/ | sed -n -e "s,^Revision: ,,p")"
 export SVN_REVISION="118029"
 # export SIDESHOW_VER="$(echo $VER | sed 's/-/_/g').$GIT_HASH.$SVN_REVISION"
-export SIDESHOW_VER="0.9.2"
-export SIDESHOW_REL="20130718SHA${GIT_HASH}R${SVN_REVISION}"
+export SIDESHOW_VER="0.9.3"
+export SIDESHOW_REL="20130924SHA${GIT_HASH}R${SVN_REVISION}"
 
 if [ -z $GIT_HASH ]; then
     echo >&2 "Unrecognized git reference: $VER"
