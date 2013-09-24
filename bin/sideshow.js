@@ -279,6 +279,9 @@ app.get('/authenticate/verify', function (req, res) {
       res.render('authenticate_finish',
         { title: req.gettext('Loading...'), success: false });
     } else if (error || !result.authenticated || !email.valid(result.email)) {
+      if (!error) {
+        error = new Error('Not authenticated');
+      }
       logger.error('OpenID verification failed: %s', String(error));
       statsd.increment('authentication.openid.failure.bad_result');
       res.status(403).render('error',
