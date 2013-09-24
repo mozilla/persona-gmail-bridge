@@ -27,6 +27,7 @@ const statsd = require('../lib/statsd');
 const validate = require('../lib/validate');
 
 const USE_TLS = url.parse(config.get('server.publicUrl')).protocol === 'https:';
+const OPENID_EMAIL_PARAM = 'ext1.value.email';
 
 if (config.get('session.secret') === config.default('session.secret')) {
   logger.warn('*** Using ephemeral secret for signing cookies. ***');
@@ -270,6 +271,11 @@ app.get('/authenticate/verify', function (req, res) {
     statsd.increment('authentication.openid.failure.no_claim');
     return res.status(400).render('error',
       { title: req.gettext('Error'), errorInfo: 'Invalid or missing claim.' });
+  }
+  var signed = req.query['openid.signed'] || '';
+  if (signed.split(',').indexOf(OPENID_EMAIL_PARAM) === -1) {
+    return res.status(401).render('error',
+      { title: req.gettext('Error'), errorInfo: 'Email not signed.' });
   }
 
   openidRP.verifyAssertion(req, function (error, result) {

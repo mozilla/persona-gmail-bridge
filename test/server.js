@@ -303,7 +303,33 @@ describe('HTTP Endpoints', function () {
 
   describe('/authenticate/verify', function () {
     var url = BASE_URL + '/authenticate/verify';
-    url; // Make JSHint shut up for the moment...
-    it('should have tests');
+
+    describe('well-formed requests', function() {
+      it('should check signed for email param', function(done) {
+        var options = {
+          qs: {
+            'openid.signed': 'ext1.value.email'
+          }
+        };
+        request(url, options, function(err, res) {
+          assert.equal(res.statusCode, 200);
+          done(err);
+        });
+      });
+    });
+
+    describe('malformed requests', function() {
+      it('should have fail if email is not signed', function(done) {
+        var options = {
+          qs: ''
+        };
+
+        request.get(url, options, function(err, res) {
+          assert.equal(res.statusCode, 401);
+          done(err);
+        });
+      });
+
+    });
   });
 });
