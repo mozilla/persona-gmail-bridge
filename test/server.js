@@ -308,10 +308,11 @@ describe('HTTP Endpoints', function () {
       it('should check signed for email param', function(done) {
         var options = {
           qs: {
+            'openid.op_endpoint': 'https://www.google.com/accounts/o8/ud',
             'openid.ns.foo': 'http://openid.net/srv/ax/1.0',
             'openid.foo.type.bar': 'http://axschema.org/contact/email',
             'openid.foo.value.bar': TEST_EMAIL,
-            'openid.signed': 'ns.foo,foo.value.bar,foo.type.bar'
+            'openid.signed': 'op_endpoint,ns.foo,foo.value.bar,foo.type.bar'
           }
         };
         request(url, options, function(err, res) {
@@ -324,7 +325,13 @@ describe('HTTP Endpoints', function () {
     describe('malformed requests', function() {
       it('should fail if email is not signed', function(done) {
         var options = {
-          qs: ''
+          qs: {
+            'openid.op_endpoint': 'https://www.google.com/accounts/o8/ud',
+            'openid.ns.foo': 'http://openid.net/srv/ax/1.0',
+            'openid.foo.type.bar': 'http://axschema.org/contact/email',
+            'openid.foo.value.bar': TEST_EMAIL,
+            'openid.signed': 'op_endpoint,ns.foo,foo.type.bar'
+          }
         };
 
         request.get(url, options, function(err, res) {
@@ -333,14 +340,16 @@ describe('HTTP Endpoints', function () {
         });
       });
 
-      it('should fail if email is not signed', function(done) {
+      it('should fail if pointing to a differnet endpoint', function(done) {
         var options = {
           qs: {
-            'openid.ns.foobar': 'http://openid.net/srv/ax/1.0',
-            'openid.signed': 'ext1.value.email'
+            'openid.op_endpoint': 'https://www.evilgoogle.com/accounts/o8/ud',
+            'openid.ns.foo': 'http://openid.net/srv/ax/1.0',
+            'openid.foo.type.bar': 'http://axschema.org/contact/email',
+            'openid.foo.value.bar': TEST_EMAIL,
+            'openid.signed': 'op_endpoint,ns.foo,foo.value.bar,foo.type.bar'
           }
         };
-
         request.get(url, options, function(err, res) {
           assert.equal(res.statusCode, 401);
           done(err);
