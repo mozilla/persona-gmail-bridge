@@ -31,7 +31,9 @@ describe('JSHint', function () {
     walk.sync(path.join(__dirname, '..', 'test'))
   );
 
-  files = files.filter( function(file) { return (/\.js$/).test(file); } );
+  files = files.filter( function(file) {
+    return (/\.js$/).test(file) && !(/\/i18n\/.*\/messages\.js$/).test(file);
+  } );
 
   files.forEach(function (file) {
     var relativeName = file.substring(commonPath.length);
