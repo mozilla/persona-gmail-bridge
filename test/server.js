@@ -25,6 +25,7 @@ const PROVEN_EMAIL = TEST_EMAIL;
 const CLAIMED_EMAIL = 'hiking.fan+1@gmail.com';
 
 /* globals describe, before, after, it */
+/* jshint maxlen:120 */
 
 describe('HTTP Endpoints', function () {
   var server;
@@ -312,7 +313,8 @@ describe('HTTP Endpoints', function () {
             'openid.ns.foo': 'http://openid.net/srv/ax/1.0',
             'openid.foo.type.bar': 'http://axschema.org/contact/email',
             'openid.foo.value.bar': TEST_EMAIL,
-            'openid.signed': 'op_endpoint,ns.foo,foo.value.bar,foo.type.bar'
+            'openid.claimed_id': 'https://www.google.com/accounts/o8/id?id=AItOawnpe2gwVe563V5tt1yUqsE4Db-uMsLfSiQ',
+            'openid.signed': 'op_endpoint,claimed_id,ns.foo,foo.value.bar,foo.type.bar'
           }
         };
         request(url, options, function(err, res) {
@@ -347,7 +349,8 @@ describe('HTTP Endpoints', function () {
             'openid.ns.foo': 'http://openid.net/srv/ax/1.0',
             'openid.foo.type.bar': 'http://axschema.org/contact/email',
             'openid.foo.value.bar': TEST_EMAIL,
-            'openid.signed': 'op_endpoint,ns.foo,foo.value.bar,foo.type.bar'
+            'openid.claimed_id': 'https://www.google.com/accounts/o8/id?id=AItOawnpe2gwVe563V5tt1yUqsE4Db-uMsLfSiQ',
+            'openid.signed': 'op_endpoint,claimed_id,ns.foo,foo.value.bar,foo.type.bar'
           }
         };
         request.get(url, options, function(err, res) {
