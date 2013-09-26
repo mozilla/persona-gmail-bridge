@@ -308,7 +308,10 @@ describe('HTTP Endpoints', function () {
       it('should check signed for email param', function(done) {
         var options = {
           qs: {
-            'openid.signed': 'ext1.value.email'
+            'openid.ns.foo': 'http://openid.net/srv/ax/1.0',
+            'openid.foo.type.bar': 'http://axschema.org/contact/email',
+            'openid.foo.value.bar': TEST_EMAIL,
+            'openid.signed': 'ns.foo,foo.value.bar,foo.type.bar'
           }
         };
         request(url, options, function(err, res) {
@@ -319,7 +322,7 @@ describe('HTTP Endpoints', function () {
     });
 
     describe('malformed requests', function() {
-      it('should have fail if email is not signed', function(done) {
+      it('should fail if email is not signed', function(done) {
         var options = {
           qs: ''
         };
@@ -330,6 +333,19 @@ describe('HTTP Endpoints', function () {
         });
       });
 
+      it('should fail if email is not signed', function(done) {
+        var options = {
+          qs: {
+            'openid.ns.foobar': 'http://openid.net/srv/ax/1.0',
+            'openid.signed': 'ext1.value.email'
+          }
+        };
+
+        request.get(url, options, function(err, res) {
+          assert.equal(res.statusCode, 401);
+          done(err);
+        });
+      });
     });
   });
 });

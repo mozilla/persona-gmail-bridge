@@ -25,9 +25,9 @@ const cert = require('../lib/cert');
 const keys = require('../lib/keys');
 const statsd = require('../lib/statsd');
 const validate = require('../lib/validate');
+const oidTool = require('../lib/openid-tool');
 
 const USE_TLS = url.parse(config.get('server.publicUrl')).protocol === 'https:';
-const OPENID_EMAIL_PARAM = 'ext1.value.email';
 
 if (config.get('session.secret') === config.default('session.secret')) {
   logger.warn('*** Using ephemeral secret for signing cookies. ***');
@@ -263,6 +263,7 @@ app.get('/authenticate/forward', validate({ email: 'gmail' }),
     });
   });
 
+
 app.get('/authenticate/verify', function (req, res) {
   // Check input precondition:
   // Session should include a valid email address that the user is claiming.
@@ -272,8 +273,10 @@ app.get('/authenticate/verify', function (req, res) {
     return res.status(400).render('error',
       { title: req.gettext('Error'), errorInfo: 'Invalid or missing claim.' });
   }
-  var signed = req.query['openid.signed'] || '';
-  if (signed.split(',').indexOf(OPENID_EMAIL_PARAM) === -1) {
+
+  // Check input precondition:
+  // OpenID params must include only one email address, and it must be signed.
+  if (!oidTool.validParams(req.query)) {
     return res.status(401).render('error',
       { title: req.gettext('Error'), errorInfo: 'Email not signed.' });
   }
