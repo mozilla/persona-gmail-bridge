@@ -160,6 +160,10 @@ describe('HTTP Endpoints', function () {
         var json = JSON.parse(body);
         assert(json.csrf);
       });
+
+      it('should deny XFRAME', function() {
+        assert.equal(res.headers['x-frame-options'], 'DENY');
+      });
     });
 
     describe('.proven', function() {
@@ -198,7 +202,21 @@ describe('HTTP Endpoints', function () {
   describe('/provision', function () {
     var url = BASE_URL + '/provision';
     url; // Make JSHint shut up for the moment...
-    it('should have tests');
+    describe('GET', function() {
+      var res;
+      var body;
+      before(function(done) {
+        request.get(url, function (err, _res, _body) {
+          res = _res;
+          body = _body;
+          done(err);
+        });
+      });
+
+      it('should NOT deny XFRAME', function() {
+        assert.equal(res.headers['x-frame-options'], undefined);
+      });
+    });
   });
 
   describe('/provision/certify', function () {

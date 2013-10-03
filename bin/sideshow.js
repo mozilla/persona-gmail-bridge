@@ -25,6 +25,7 @@ const cert = require('../lib/cert');
 const keys = require('../lib/keys');
 const statsd = require('../lib/statsd');
 const validate = require('../lib/validate');
+const xframe = require('../lib/xframe');
 
 const USE_TLS = url.parse(config.get('server.publicUrl')).protocol === 'https:';
 
@@ -72,6 +73,10 @@ if (USE_TLS) {
     next();
   });
 }
+
+app.use(xframe({
+  exclude: ['/provision']
+}));
 
 app.use(csp([
   '/provision',
