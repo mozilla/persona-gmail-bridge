@@ -4,9 +4,9 @@
 
 // Silence app logging by default. Must come before require('../bin/sideshow');
 const config = require('../lib/config');
-if (config.get('logPath') === config.default('logPath') &&
-    !process.env.LOG_PATH) {
-  config.set('logPath', '/dev/null');
+if (JSON.stringify(config.get('logging.loggers')) ===
+    JSON.stringify(config.default('logging.loggers'))) {
+  config.set('logging.loggers.sideshow.handlers', ['null']);
 }
 
 const assert = require('assert');
