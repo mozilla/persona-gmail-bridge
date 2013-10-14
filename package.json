@@ -34,7 +34,7 @@
     "validator": "1.2.0"
   },
   "devDependencies": {
-    "awsbox": "0.4.5",
+    "awsbox": "0.6.2",
     "jshint": "2.1.3",
     "mocha": "1.10.0",
     "request": "2.21.0",
