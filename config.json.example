@@ -1,0 +1,11 @@
+{
+  "server": {
+    "publicUrl": "https://gmail.login.persona.org",
+    "personaUrl": "https://login.persona.org"
+  },
+  "google": {
+    "clientId": CLIENT_ID_HERE,
+    "clientSecret": CLIENT_SECRET_HERE
+  }
+}
+
