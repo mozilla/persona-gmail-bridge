@@ -11,8 +11,8 @@ License:       MPL 2.0
 URL:           https://github.com/callahad/sideshow
 BuildRoot:     %{_tmppath}/%{name}-%{version}-%{release}-root
 AutoReqProv:   no
-Requires:      openssl, nodejs = 0.8.24
-BuildRequires: gcc-c++, gmp-devel, make, nodejs = 0.8.24
+Requires:      openssl, nodejs >= 0.8.26
+BuildRequires: gcc-c++, gmp-devel, make, nodejs >= 0.8.26
 Source:        sideshow-%{version}.tar.gz
 
 %description
