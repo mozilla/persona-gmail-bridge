@@ -24,12 +24,12 @@
     "convict": "0.3.2",
     "ejs": "0.8.4",
     "express": "3.2.6",
+    "intel": "0.2.0",
     "i18n-abide": "0.0.13",
     "jwcrypto": "0.4.4",
     "lockdown": "0.0.5",
     "node-statsd": "0.0.7",
     "openid": "0.5.2",
-    "winston": "0.7.1",
     "validator": "1.2.0"
   },
   "devDependencies": {
