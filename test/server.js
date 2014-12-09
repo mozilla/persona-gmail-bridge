@@ -221,7 +221,7 @@ describe('HTTP Endpoints', function () {
         var jar = request.jar();
         jar.add(request.cookie('session=' + mookie({ proven: PROVEN_EMAIL })));
         var options = {
-          headers: { 'X-CSRF-Token': 'test' },
+          headers: { 'X-CSRF-Token': 'testSalt-5lTgCdom5sQd8ZQDXK8pvhCP5Go' },
           json: {
             email: CLAIMED_EMAIL,
             pubkey: pubkey,
@@ -229,7 +229,6 @@ describe('HTTP Endpoints', function () {
           },
           jar: jar
         };
-
         request.post(url, options, function(err, res, body) {
           assert(jwcrypto.extractComponents(body.cert));
           done(err);

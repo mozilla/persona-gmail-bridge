@@ -6,7 +6,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 const path = require('path');
-const fs = require('fs');
 const url = require('url');
 
 const express = require('express');
@@ -179,7 +178,7 @@ app.get('/session', function(req, res) {
   var claimed = req.session.claimed;
   var proven = req.session.proven;
   res.json({
-    csrf: req.session._csrf,
+    csrf: req.csrfToken(),
     proven: email.compare(claimed, proven) && claimed
   });
 });

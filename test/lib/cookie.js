@@ -8,8 +8,8 @@ const options = {
 };
 
 module.exports = function cookie(contents) {
-  if (!contents._csrf) {
-    contents._csrf = 'test';
+  if (!contents.csrfSecret) {
+    contents.csrfSecret = 'testSecret';
   }
   return clientSessions.util.encode(options, contents);
 };
