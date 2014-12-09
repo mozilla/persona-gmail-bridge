@@ -21,7 +21,7 @@
       ],
       "You're currently signed into Google as %s.": [
          null,
-         "Tá tú logáilte isteach i nGoogle mar %s."
+         "Tá tú logáilte isteach i nGoogle mar %s."
       ],
       "If you want to use %s, log out of Google and sign in again.": [
          null,

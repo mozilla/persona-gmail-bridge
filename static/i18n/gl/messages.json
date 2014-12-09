@@ -5,31 +5,31 @@
       },
       "Loading...": [
          null,
-         ""
+         "Cargando..."
       ],
       "Error": [
          null,
-         ""
+         "Erro"
       ],
       "Accounts don't match": [
          null,
-         ""
+         "Non coinciden as contas"
       ],
       "Something went wrong. Please try again later.": [
          null,
-         ""
+         "Algo foi mal. Tente de novo máis tarde."
       ],
       "You're currently signed into Google as %s.": [
          null,
-         ""
+         "Nestes momentos está identificado en Google como %s."
       ],
       "If you want to use %s, log out of Google and sign in again.": [
          null,
-         ""
+         "Se quere usar %s, saia da conta de Google e identifíquese de novo."
       ],
       "Force Google logout": [
          null,
-         ""
+         "Forzar a saída de Google"
       ]
    }
 }

@@ -1,11 +1,11 @@
 {
    "messages": {
       "": {
-         "Project-Id-Version": " PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2012-06-24 09:50+0200\nPO-Revision-Date: 2013-07-01 14:49+0200\nLast-Translator: Vito <smolejv@gmx.net>\nLanguage-Team: LANGUAGE <LL@li.org>\nLanguage: sl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\nX-Generator: Pootle 2.1.6\n"
+         "Project-Id-Version": " PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2012-06-24 09:50+0200\nPO-Revision-Date: 2013-10-02 14:10+0000\nLast-Translator: Matjaž <m@owca.info>\nLanguage-Team: LANGUAGE <LL@li.org>\nLanguage: sl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\nX-Generator: Pootle 2.5.0\nX-POOTLE-MTIME: 1380723000.0\n"
       },
       "Loading...": [
          null,
-         "Nalaganje..."
+         "Nalaganje ..."
       ],
       "Error": [
          null,
