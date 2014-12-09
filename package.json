@@ -13,7 +13,6 @@
   ],
   "license": "MPL 2.0",
   "scripts": {
-    "preinstall": "lockdown",
     "start": "node ./bin/sideshow.js --issuer=gmail.com",
     "test": "mocha --check-leaks"
   },
@@ -28,7 +27,6 @@
     "ejs": "1.0.0",
     "express": "4.10.4",
     "i18n-abide": "0.0.22",
-    "lockdown": "0.0.6",
     "morgan": "1.5.0",
     "node-statsd": "0.1.0",
     "openid": "0.5.9",
