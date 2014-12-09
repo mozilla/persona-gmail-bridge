@@ -12,7 +12,7 @@ if (config.get('logPath') === config.default('logPath') &&
 const assert = require('assert');
 const urlModule = require('url');
 
-const jwcrypto = require('jwcrypto');
+const bidCrypto = require('browserid-crypto');
 // Fixme: don't use global cookie jar
 const request = require('request').defaults({jar: true});
 const openid = require('openid');
@@ -137,7 +137,7 @@ describe('HTTP Endpoints', function () {
     it('should contain a valid public key', function () {
       var doc = JSON.parse(body);
       var pubKey = JSON.stringify(doc['public-key']);
-      assert(jwcrypto.loadPublicKey(pubKey));
+      assert(bidCrypto.loadPublicKey(pubKey));
     });
   });
 
@@ -216,7 +216,7 @@ describe('HTTP Endpoints', function () {
       before(function (done) {
         // Generate a public key for the signing request
         var keyOpts = { algorithm: 'RS', keysize: 64 };
-        jwcrypto.generateKeypair(keyOpts, function (err, keypair) {
+        bidCrypto.generateKeypair(keyOpts, function (err, keypair) {
           pubkey = keypair.publicKey.serialize();
           done(err);
         });
@@ -237,7 +237,7 @@ describe('HTTP Endpoints', function () {
         };
 
         request.post(url, options, function(err, res, body) {
-          assert(jwcrypto.extractComponents(body.cert));
+          assert(bidCrypto.extractComponents(body.cert));
           done(err);
         });
       });

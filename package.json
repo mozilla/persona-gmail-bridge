@@ -18,6 +18,7 @@
     "test": "mocha --check-leaks"
   },
   "dependencies": {
+    "browserid-crypto": "0.7.0",
     "client-sessions": "0.7.0",
     "connect-fonts": "2.0.2",
     "connect-fonts-opensans": "0.0.5",
@@ -25,7 +26,6 @@
     "ejs": "1.0.0",
     "express": "3.18.4",
     "i18n-abide": "0.0.8",
-    "jwcrypto": "0.4.4",
     "lockdown": "0.0.6",
     "node-statsd": "0.1.0",
     "openid": "0.5.9",
