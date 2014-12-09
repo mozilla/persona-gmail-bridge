@@ -13,9 +13,9 @@ Running is simple:
 3. `npm install`
 4. `npm start`
 
-For local development, set the `SHIMMED_PRIMARIES` environment variable for gmail.com and googlemail.com before you start up browserid:
+For local development, set the `SHIMMED_PRIMARIES` environment variable for gmail.com and googlemail.com before you start up Persona:
 
-1. `cd /path/to/browserid`
+1. `cd /path/to/persona`
 2. `export SHIMMED_PRIMARIES='gmail.com|http://127.0.0.1:3000|/path/to/persona-gmail-bridge/var/well-known.json,googlemail.com|http://127.0.0.1:3000|/path/to/persona-gmail-bridge/var/well-known.json'`
 3. `npm start`
 

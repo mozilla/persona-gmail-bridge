@@ -1,6 +1,6 @@
 {
-  "name": "sideshow",
-  "version": "0.9.9",
+  "name": "persona-gmail-bridge",
+  "version": "0.9.10",
   "private": true,
   "description": "An experiment in building a minimal Gmail ProxyIDP",
   "repository": {
@@ -13,7 +13,7 @@
   ],
   "license": "MPL 2.0",
   "scripts": {
-    "start": "node ./bin/sideshow.js --issuer=gmail.com",
+    "start": "node ./bin/persona-gmail-bridge.js --issuer=gmail.com",
     "test": "mocha --check-leaks"
   },
   "dependencies": {

@@ -1,22 +1,22 @@
-%define _rootdir /opt/browserid-bridge-gmail
+%define _rootdir /opt/persona-gmail-bridge
 %define version __VERSION__
 
-Name:          browserid-bridge-gmail
+Name:          persona-gmail-bridge
 Version:       %{version}
 Release:       0.1.%{checkout}%{?dist}
-Summary:       BrowserID Identity Bridge for Gmail
+Summary:       Persona Identity Bridge for Gmail
 Packager:      Sean McArthur <smcarthur@mozilla.com>
 Group:         Development/Libraries
 License:       MPL 2.0
-URL:           https://github.com/callahad/sideshow
+URL:           https://github.com/mozilla/persona-gmail-bridge
 BuildRoot:     %{_tmppath}/%{name}-%{version}-%{release}-root
 AutoReqProv:   no
 Requires:      openssl, nodejs >= 0.10.32
 BuildRequires: gcc-c++, gmp-devel, make, nodejs >= 0.10.32
-Source:        sideshow-%{version}.tar.gz
+Source:        persona-gmail-bridge-%{version}.tar.gz
 
 %description
-sideshow: BrowserID Bridging to Google.
+persona-gmail-bridge: Persona Bridging to Google.
 
 %prep
 %setup -q -c

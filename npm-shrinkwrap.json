@@ -1,6 +1,6 @@
 {
-  "name": "sideshow",
-  "version": "0.9.1",
+  "name": "persona-gmail-bridge",
+  "version": "0.9.10",
   "dependencies": {
     "body-parser": {
       "version": "1.10.0",

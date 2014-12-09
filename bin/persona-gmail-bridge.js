@@ -332,7 +332,8 @@ if (require.main === module) {
   var server = app.listen(config.get('server.port'), config.get('server.host'),
     function() {
       var a = server.address();
-      logger.info("sideshow running on http://" + a.address + ":" + a.port);
+      logger.info("persona-gmail-bridge running on http://"
+        + a.address + ":" + a.port);
     }
   );
 }

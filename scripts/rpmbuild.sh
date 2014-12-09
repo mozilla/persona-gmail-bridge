@@ -28,7 +28,7 @@ export GIT_HASH=$(git rev-parse --verify --quiet --short $VER);
 # export SVN_REVISION="$(svn info locale/ | sed -n -e "s,^Revision: ,,p")"
 export SVN_REVISION="135847"
 # export SIDESHOW_VER="$(echo $VER | sed 's/-/_/g').$GIT_HASH.$SVN_REVISION"
-export SIDESHOW_VER="0.9.9"
+export SIDESHOW_VER="0.9.10"
 export SIDESHOW_REL="20141209SHA${GIT_HASH}R${SVN_REVISION}"
 
 if [ -z $GIT_HASH ]; then
@@ -36,16 +36,16 @@ if [ -z $GIT_HASH ]; then
     exit 1
 fi
 
-git archive -o "$TOP/rpmbuild/SOURCES/sideshow-$SIDESHOW_VER.tar.gz" $GIT_HASH
+git archive -o "$TOP/rpmbuild/SOURCES/persona-gmail-bridge-$SIDESHOW_VER.tar.gz" $GIT_HASH
 
 cd $TOP
 set +e
 
 # generate a new spec file with the version baked in
-sed "s/__VERSION__/$SIDESHOW_VER/g" scripts/sideshow.spec.template > /tmp/sideshow.spec
+sed "s/__VERSION__/$SIDESHOW_VER/g" scripts/persona-gmail-bridge.spec.template > /tmp/persona-gmail-bridge.spec
 
 echo "Building Source RPM"
 rpmbuild --define "_topdir $PWD/rpmbuild" \
     --define "version $SIDESHOW_VER" \
     --define "checkout $SIDESHOW_REL" \
-    -ba /tmp/sideshow.spec
+    -ba /tmp/persona-gmail-bridge.spec

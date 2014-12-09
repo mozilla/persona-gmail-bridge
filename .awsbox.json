@@ -1,5 +1,5 @@
 {
-  "processes": [ "bin/sideshow.js" ],
+  "processes": [ "bin/persona-gmail-bridge.js" ],
   "env": {
     "CONFIG_FILES": "$HOME/config.json",
     "PERSONA_URL": "https://login.dev.anosrep.org"
