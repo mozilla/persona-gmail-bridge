@@ -28,7 +28,7 @@ export GIT_HASH=$(git rev-parse --verify --quiet --short $VER);
 # export SVN_REVISION="$(svn info locale/ | sed -n -e "s,^Revision: ,,p")"
 export SVN_REVISION="135847"
 # export SIDESHOW_VER="$(echo $VER | sed 's/-/_/g').$GIT_HASH.$SVN_REVISION"
-export SIDESHOW_VER="0.9.7"
+export SIDESHOW_VER="0.9.8"
 export SIDESHOW_REL="20141209SHA${GIT_HASH}R${SVN_REVISION}"
 
 if [ -z $GIT_HASH ]; then
