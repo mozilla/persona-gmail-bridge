@@ -13,7 +13,8 @@ const assert = require('assert');
 const urlModule = require('url');
 
 const jwcrypto = require('jwcrypto');
-const request = require('request');
+// Fixme: don't use global cookie jar
+const request = require('request').defaults({jar: true});
 const openid = require('openid');
 
 const app = require('../bin/sideshow');
@@ -167,10 +168,12 @@ describe('HTTP Endpoints', function () {
     describe('.proven', function() {
       it('should be equal to claimed email', function(done) {
         var jar = request.jar();
-        jar.add(request.cookie('session=' + mookie({
+        var cookie = request.cookie('session=' + mookie({
           proven: PROVEN_EMAIL,
           claimed: CLAIMED_EMAIL
-        })));
+        }));
+        jar.setCookie(cookie, url);
+
         request.get({ url: url, jar: jar }, function(err, res, body) {
           assert.ifError(err);
 
@@ -182,10 +185,12 @@ describe('HTTP Endpoints', function () {
 
       it('should be false if mismatch', function(done) {
         var jar = request.jar();
-        jar.add(request.cookie('session=' + mookie({
+        var cookie = request.cookie('session=' + mookie({
           proven: PROVEN_EMAIL,
           claimed: 'its.not.me@gmail.com'
-        })));
+        }));
+        jar.setCookie(cookie, url);
+
         request.get({ url: url, jar: jar }, function(err, res, body) {
           assert.ifError(err);
 
@@ -219,7 +224,8 @@ describe('HTTP Endpoints', function () {
 
       it('should sign certificates', function (done) {
         var jar = request.jar();
-        jar.add(request.cookie('session=' + mookie({ proven: PROVEN_EMAIL })));
+        var cookie = request.cookie('session=' + mookie({ proven: PROVEN_EMAIL }));
+        jar.setCookie(cookie, url);
         var options = {
           headers: { 'X-CSRF-Token': 'testSalt-5lTgCdom5sQd8ZQDXK8pvhCP5Go' },
           json: {
@@ -229,6 +235,7 @@ describe('HTTP Endpoints', function () {
           },
           jar: jar
         };
+
         request.post(url, options, function(err, res, body) {
           assert(jwcrypto.extractComponents(body.cert));
           done(err);

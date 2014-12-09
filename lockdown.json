@@ -22,11 +22,14 @@
   },
   "async": {
     "0.1.22": "0fc1aaa088a0e3ef0ebe2d8831bab0dcf8845061",
-    "0.2.10": "b6bbe0b0674b9d719708ca38de8c237cb526c3d1"
+    "0.2.10": "b6bbe0b0674b9d719708ca38de8c237cb526c3d1",
+    "0.9.0": "ac3613b1da9bed1b47510bb4651b8931e47146c7"
   },
   "aws-sign": {
-    "0.2.0": "c55013856c8194ec854a0cbec90aab5a04ce3ac5",
-    "0.3.0": "3d81ca69b474b1e16518728b51c24ff0bbedc6e9"
+    "0.2.0": "c55013856c8194ec854a0cbec90aab5a04ce3ac5"
+  },
+  "aws-sign2": {
+    "0.5.0": "c57103f7a17fc037f02d7c2e64b602ea223f7d63"
   },
   "awsbox": {
     "0.7.0": "f1eb69a78bd376e2fd6dead921c6f744dfa8d519"
@@ -62,6 +65,9 @@
   "bigint": {
     "0.4.2": "5bccafb5af3924cc71eb59942fb3a64a12906e49"
   },
+  "bl": {
+    "0.9.3": "c41eff3e7cb31bde107c8f10076d274eff7f7d44"
+  },
   "body-parser": {
     "1.9.3": "edfacd4fcfad87dfe74f861a5cc712900aef2623"
   },
@@ -77,6 +83,9 @@
   },
   "bytes": {
     "1.0.0": "3569ede8ba34315fab99c3e92cb04c7220de1fa8"
+  },
+  "caseless": {
+    "0.8.0": "5bca2881d41437f54b2407ebe34888c7b9ad4f7d"
   },
   "character-parser": {
     "1.0.2": "55384d6afcf8c6b9dd483e8347646a790e4545e7"
@@ -146,8 +155,7 @@
     "0.1.2": "72fec3d24e48a3432073d90c12642005061004b1"
   },
   "cookie-jar": {
-    "0.2.0": "64ecc06ac978db795e4b5290cbe48ba3781400fa",
-    "0.3.0": "bc9a27d4e2b97e186cd57c9e2063cb99fa68cccc"
+    "0.2.0": "64ecc06ac978db795e4b5290cbe48ba3781400fa"
   },
   "cookie-parser": {
     "1.3.3": "7e3a2c745f4b460d5a340e578a0baa5d7725fe37"
@@ -298,7 +306,7 @@
   },
   "form-data": {
     "0.0.10": "db345a5378d86aeeb1ed5d553b869ac192d2f5ed",
-    "0.0.8": "0890cd1005c5ccecc0b9d24a88052c92442d0db5"
+    "0.1.4": "91abd788aba9702b1aabfa8bc01031a2ac9e3b12"
   },
   "forwarded": {
     "0.1.0": "19ef9874c4ae1c297bcf078fde63a09b66a84363"
@@ -331,11 +339,10 @@
   },
   "hawk": {
     "0.10.2": "9b361dee95a931640e6d504e05609a8fc3ac45d2",
-    "0.13.1": "3617958821f58311e4d7f6de291fca662b412ef4"
+    "1.1.1": "87cd491f9b46e4e2aeaca335416766885d2d1ed9"
   },
   "hoek": {
     "0.7.6": "60fbd904557541cd2b8795abf308a1b3770e155a",
-    "0.8.5": "1e9fd770ef7ebe0274adfcb5b0806a025a5e4e9f",
     "0.9.1": "3d322462badf07716ea7eb85baf88079cddce505"
   },
   "htmlparser2": {
@@ -348,7 +355,7 @@
     "1.2.7": "b881fa12c59b0079fd4ced456bf8dbc9610d3b78"
   },
   "http-signature": {
-    "0.9.11": "9e882714572315e6790a5d0a7955efff1f19e653"
+    "0.10.0": "1494e4f5000a83c0f11bcc12d6007c530cb99582"
   },
   "i18n-abide": {
     "0.0.8": "a7610465be083a21e1c2f52e2fd78503ee90dd29"
@@ -386,7 +393,7 @@
   },
   "json-stringify-safe": {
     "3.0.0": "9db7b0e530c7f289c5e8c8432af191c2ff75a5b3",
-    "4.0.0": "77c271aaea54302e68efeaccb56abbf06a9b1a54"
+    "5.0.0": "4c1f228b5050837eba9d21f50c2e6e320624566e"
   },
   "jsxgettext": {
     "0.1.3": "db9dd0bedd531606cdd5fd978dd75d383fd99327"
@@ -427,6 +434,7 @@
     "1.3.0": "5fefeb25dd9b097c5d45091c60f8149b98d749ec"
   },
   "mime-types": {
+    "1.0.2": "995ae1392ab8affcbfcb2641dd054e943c0d5dce",
     "2.0.3": "70b5cb5165b55dcb4972839f16d6077b0bb506f4"
   },
   "minimatch": {
@@ -501,7 +509,7 @@
   },
   "oauth-sign": {
     "0.2.0": "a0e6a1715daed062f322b622b7fe5afd1035b6e2",
-    "0.3.0": "cb540f93bb2b22a7d5941691a288d60e8ea9386e"
+    "0.5.0": "d767f5169325620eab2e087ef0c472e773db6461"
   },
   "on-finished": {
     "2.1.1": "f82ca1c9e3a4f3286b1b9938610e5b8636bd3cb2"
@@ -546,9 +554,11 @@
   "proxy-addr": {
     "1.0.4": "51dbebbb22cc0eb04b77a76d871b75970f198cdd"
   },
+  "punycode": {
+    "1.3.2": "9653a036fb7c1ee42342f2325cceefea3926c48d"
+  },
   "qs": {
     "0.5.6": "31b1ad058567651c526921506b9a8793911a0384",
-    "0.6.6": "6e015098ff51968b8a3c819001d5f2c89bc4b107",
     "2.3.3": "e9e85adbe75da0bbe4c8e0476a086290f863b404"
   },
   "range-parser": {
@@ -565,6 +575,7 @@
     "1.2.7": "f0b440c461a218f4dbf48b094e80fc65c5248502"
   },
   "readable-stream": {
+    "1.0.33": "3a360dd66c1b1d7fd4705389860eda1d0f61126c",
     "1.1.13": "f6eef764f514c89e2b9e23146a75ba106756d23e"
   },
   "readdir-scoped-modules": {
@@ -578,7 +589,7 @@
   },
   "request": {
     "2.16.6": "872fe445ae72de266b37879d6ad7dc948fa01cad",
-    "2.21.0": "5728ab9c45e5a87c99daccd530298b6673a868d7"
+    "2.49.0": "0d4f6348dc3348059b553e4db60fd2478de662a7"
   },
   "resolve": {
     "0.2.8": "fdb17d4abb0ecaf6f80d67ac03cf290088f6c0d0"
@@ -643,6 +654,9 @@
   "string_decoder": {
     "0.10.31": "62e203bc41766c6c28c9fc84301dab1c5310fa94"
   },
+  "stringstream": {
+    "0.0.4": "0f0e3423f942960b5692ac324a57dd093bc41a92"
+  },
   "strip-json-comments": {
     "1.0.2": "5a48ab96023dbac1b7b8d0ffabf6f63f1677be9f"
   },
@@ -655,12 +669,15 @@
   "tmp": {
     "0.0.23": "de874aa5e974a85f0a32cdfdbd74663cb3bd9c74"
   },
+  "tough-cookie": {
+    "0.12.1": "8220c7e21abd5b13d96804254bd5a81ebf2c7d62"
+  },
   "transformers": {
     "2.0.1": "352131dfceb93a7532dc7535a4f142510435a394"
   },
   "tunnel-agent": {
     "0.2.0": "6853c2afb1b2109e45629e492bde35f459ea69e8",
-    "0.3.0": "ad681b68f5321ad2827c4cfb1b7d5df2cfe942ee"
+    "0.4.0": "b1184e312ffbcf70b3b4c78e8c219de7ebb1c550"
   },
   "type-is": {
     "1.5.3": "b7fb92d0abc628393f10dd260932cca65fe9ff68"
