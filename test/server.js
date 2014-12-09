@@ -10,6 +10,7 @@ if (config.get('logPath') === config.default('logPath') &&
 }
 
 const assert = require('assert');
+const urlModule = require('url');
 
 const jwcrypto = require('jwcrypto');
 const request = require('request');
@@ -32,7 +33,7 @@ describe('HTTP Endpoints', function () {
 
   before(function (done) {
     app.setOpenIDRP(mockid({
-      url: 'http://openid.example',
+      url: 'http://openid.example?foo=bar',
       result: {
         authenticated: true,
         email: TEST_EMAIL
@@ -271,7 +272,16 @@ describe('HTTP Endpoints', function () {
       });
 
       it('should redirect to the OpenID endpoint', function () {
-        assert.equal(res.headers.location, 'http://openid.example');
+        var location = urlModule.parse(res.headers.location);
+        assert.equal(location.host, 'openid.example');
+      });
+
+      it('should acknowledge pending OpenID deprecation', function () {
+        var location = urlModule.parse(res.headers.location, true);
+        // Suppress camelCase warning
+        /* jshint -W106 */
+        assert.equal(location.query.openid_shutdown_ack, '2015-04-20');
+        /* jshint +W106 */
       });
     });
 

@@ -258,7 +258,12 @@ app.get('/authenticate/forward', validate({ email: 'gmail' }),
       } else {
         statsd.increment('authentication.forwarding.success');
         req.session.claimed = req.query.email;
-        res.redirect(authUrl);
+
+        var dest = url.parse(authUrl, true);
+        delete dest.search; // search takes priority over query in url.format()
+        dest.query.openid_shutdown_ack = '2015-04-20';
+
+        res.redirect(url.format(dest));
       }
     });
   });

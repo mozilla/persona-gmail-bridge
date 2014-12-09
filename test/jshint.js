@@ -6,8 +6,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const util = require('util');
-const assert = require('assert');
 
 const jshint = require('jshint').JSHINT;
 const walk = require('walkdir');
