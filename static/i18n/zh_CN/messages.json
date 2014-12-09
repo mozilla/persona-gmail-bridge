@@ -1,0 +1,35 @@
+{
+   "messages": {
+      "": {
+         "Project-Id-Version": " PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2012-06-24 09:50+0200\nPO-Revision-Date: 2013-06-30 11:52+0200\nLast-Translator: Shen <steekid@gmail.com>\nLanguage-Team: LANGUAGE <LL@li.org>\nLanguage: zh_CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Pootle 2.1.6\n"
+      },
+      "Loading...": [
+         null,
+         "正在读取..."
+      ],
+      "Error": [
+         null,
+         "错误"
+      ],
+      "Accounts don't match": [
+         null,
+         "帐号不匹配"
+      ],
+      "Something went wrong. Please try again later.": [
+         null,
+         "出错了，请稍后再试。"
+      ],
+      "You're currently signed into Google as %s.": [
+         null,
+         "你当前作为 %s 登录到 Google 。"
+      ],
+      "If you want to use %s, log out of Google and sign in again.": [
+         null,
+         "如果你希望使用 %s ，请退出后再次登录。"
+      ],
+      "Force Google logout": [
+         null,
+         "强制从 Google 帐户退出"
+      ]
+   }
+}

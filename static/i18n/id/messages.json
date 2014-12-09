@@ -1,0 +1,35 @@
+{
+   "messages": {
+      "": {
+         "Project-Id-Version": " PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2012-06-24 09:50+0200\nPO-Revision-Date: 2013-07-11 22:21+0200\nLast-Translator: Romi <romihardiyanto@gmail.com>\nLanguage-Team: LANGUAGE <LL@li.org>\nLanguage: id\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Pootle 2.1.6\n"
+      },
+      "Loading...": [
+         null,
+         "Memuat..."
+      ],
+      "Error": [
+         null,
+         "Galat"
+      ],
+      "Accounts don't match": [
+         null,
+         "Akun tidak sesuai"
+      ],
+      "Something went wrong. Please try again later.": [
+         null,
+         "Ada yang salah. Silakan coba lagi nanti."
+      ],
+      "You're currently signed into Google as %s.": [
+         null,
+         "Anda sedang masuk ke Google sebagai %s."
+      ],
+      "If you want to use %s, log out of Google and sign in again.": [
+         null,
+         "Jika ingin menggunakan %s, silakan keluar dari Google dan masuk kembali."
+      ],
+      "Force Google logout": [
+         null,
+         "Keluar secara paksa dari Google"
+      ]
+   }
+}

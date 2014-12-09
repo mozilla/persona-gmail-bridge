@@ -6,11 +6,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 const path = require('path');
-const fs = require('fs');
 const url = require('url');
 
+const bodyParser = require('body-parser');
+const csrf = require('csurf');
 const express = require('express');
+const favicon = require('serve-favicon');
 const i18n = require('i18n-abide');
+const morgan = require('morgan');
 const openid = require('openid');
 const clientSessions = require('client-sessions');
 const fonts = require('connect-fonts');
@@ -25,6 +28,7 @@ const cert = require('../lib/cert');
 const keys = require('../lib/keys');
 const statsd = require('../lib/statsd');
 const validate = require('../lib/validate');
+const oidTool = require('../lib/openid-tool');
 const xframe = require('../lib/xframe');
 
 const USE_TLS = url.parse(config.get('server.publicUrl')).protocol === 'https:';
@@ -63,7 +67,7 @@ app.locals.errorInfo = undefined;
 // -- Express Middleware --
 
 app.use(statsd.middleware());
-app.use(express.json());
+app.use(bodyParser.json());
 
 if (USE_TLS) {
   app.use(function(req, res, next) {
@@ -85,8 +89,7 @@ app.use(csp([
   '/authenticate/verify'
 ]));
 
-app.use(express.favicon(
-  path.join(__dirname, '..', 'static', 'i', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, '..', 'static', 'i', 'favicon.ico')));
 
 app.use(clientSessions({
   cookieName: 'session',
@@ -98,25 +101,27 @@ app.use(clientSessions({
   }
 }));
 
-app.use(express.csrf());
+app.use(csrf());
 
-express.logger.token('path', function(req) {
+morgan.token('path', function(req) {
   return req.path;
 });
-express.logger.token('safe-referrer', function(req) {
+morgan.token('safe-referrer', function(req) {
   var referrer = req.headers.referer || req.headers.referrer || '';
   var queryIdx = referrer.indexOf('?');
   return (queryIdx < 0) ? referrer : referrer.slice(0, queryIdx);
 });
-app.use(express.logger({
-  format: ':remote-addr - - ":method :path HTTP/:http-version" :status ' +
-          ':response-time :res[content-length] ":safe-referrer" ":user-agent"',
-  stream: {
-    write: function(x) {
-      logger.info(String(x).trim());
+app.use(morgan(
+  ':remote-addr - - ":method :path HTTP/:http-version" :status ' +
+  ':response-time :res[content-length] ":safe-referrer" ":user-agent"',
+  {
+    stream: {
+      write: function(x) {
+        logger.info(String(x).trim());
+      }
     }
   }
-}));
+));
 
 // No user-specific information. Localized or caching otherwise discouraged.
 app.use(caching.revalidate([
@@ -183,7 +188,7 @@ app.get('/session', function(req, res) {
   var claimed = req.session.claimed;
   var proven = req.session.proven;
   res.json({
-    csrf: req.session._csrf,
+    csrf: req.csrfToken(),
     proven: email.compare(claimed, proven) && claimed
   });
 });
@@ -262,10 +267,16 @@ app.get('/authenticate/forward', validate({ email: 'gmail' }),
       } else {
         statsd.increment('authentication.forwarding.success');
         req.session.claimed = req.query.email;
-        res.redirect(authUrl);
+
+        var dest = url.parse(authUrl, true);
+        delete dest.search; // search takes priority over query in url.format()
+        dest.query.openid_shutdown_ack = '2015-04-20';
+
+        res.redirect(url.format(dest));
       }
     });
   });
+
 
 app.get('/authenticate/verify', function (req, res) {
   // Check input precondition:
@@ -275,6 +286,13 @@ app.get('/authenticate/verify', function (req, res) {
     statsd.increment('authentication.openid.failure.no_claim');
     return res.status(400).render('error',
       { title: req.gettext('Error'), errorInfo: 'Invalid or missing claim.' });
+  }
+
+  // Check input precondition:
+  // OpenID params must include only one email address, and it must be signed.
+  if (!oidTool.validParams(req.query)) {
+    return res.status(401).render('error',
+      { title: req.gettext('Error'), errorInfo: 'Email not signed.' });
   }
 
   openidRP.verifyAssertion(req, function (error, result) {

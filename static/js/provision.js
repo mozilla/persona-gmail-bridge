@@ -17,9 +17,8 @@
     }
 
     function getRequest() {
-      // From http://blogs.msdn.com/b/ie/archive/2011/08/31
-      //                  /browsing-without-plug-ins.aspx
       // Best Practice: Use Native XHR, if available
+      // blogs.msdn.com/b/ie/archive/2011/08/31/browsing-without-plug-ins.aspx
       if (window.XMLHttpRequest) {
         return new XMLHttpRequest();
       } else if (window.ActiveXObject) {

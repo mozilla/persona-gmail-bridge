@@ -1,0 +1,36 @@
+;var json_locale_data = {
+   "messages": {
+      "": {
+         "Project-Id-Version": " PACKAGE VERSION\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2012-06-24 09:50+0200\nPO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\nLast-Translator: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team: LANGUAGE <LL@li.org>\nLanguage: gl\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nX-Generator: Translate Toolkit 1.9.0\n"
+      },
+      "Loading...": [
+         null,
+         "Cargando..."
+      ],
+      "Error": [
+         null,
+         "Erro"
+      ],
+      "Accounts don't match": [
+         null,
+         "Non coinciden as contas"
+      ],
+      "Something went wrong. Please try again later.": [
+         null,
+         "Algo foi mal. Tente de novo máis tarde."
+      ],
+      "You're currently signed into Google as %s.": [
+         null,
+         "Nestes momentos está identificado en Google como %s."
+      ],
+      "If you want to use %s, log out of Google and sign in again.": [
+         null,
+         "Se quere usar %s, saia da conta de Google e identifíquese de novo."
+      ],
+      "Force Google logout": [
+         null,
+         "Forzar a saída de Google"
+      ]
+   }
+}
+;

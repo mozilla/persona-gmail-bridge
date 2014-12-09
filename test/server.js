@@ -10,9 +10,11 @@ if (config.get('logPath') === config.default('logPath') &&
 }
 
 const assert = require('assert');
+const urlModule = require('url');
 
-const jwcrypto = require('jwcrypto');
-const request = require('request');
+const bidCrypto = require('browserid-crypto');
+// Fixme: don't use global cookie jar
+const request = require('request').defaults({jar: true});
 const openid = require('openid');
 
 const app = require('../bin/sideshow');
@@ -25,13 +27,14 @@ const PROVEN_EMAIL = TEST_EMAIL;
 const CLAIMED_EMAIL = 'hiking.fan+1@gmail.com';
 
 /* globals describe, before, after, it */
+/* jshint maxlen:120 */
 
 describe('HTTP Endpoints', function () {
   var server;
 
   before(function (done) {
     app.setOpenIDRP(mockid({
-      url: 'http://openid.example',
+      url: 'http://openid.example?foo=bar',
       result: {
         authenticated: true,
         email: TEST_EMAIL
@@ -134,7 +137,7 @@ describe('HTTP Endpoints', function () {
     it('should contain a valid public key', function () {
       var doc = JSON.parse(body);
       var pubKey = JSON.stringify(doc['public-key']);
-      assert(jwcrypto.loadPublicKey(pubKey));
+      assert(bidCrypto.loadPublicKey(pubKey));
     });
   });
 
@@ -169,10 +172,12 @@ describe('HTTP Endpoints', function () {
     describe('.proven', function() {
       it('should be equal to claimed email', function(done) {
         var jar = request.jar();
-        jar.add(request.cookie('session=' + mookie({
+        var cookie = request.cookie('session=' + mookie({
           proven: PROVEN_EMAIL,
           claimed: CLAIMED_EMAIL
-        })));
+        }));
+        jar.setCookie(cookie, url);
+
         request.get({ url: url, jar: jar }, function(err, res, body) {
           assert.ifError(err);
 
@@ -184,10 +189,12 @@ describe('HTTP Endpoints', function () {
 
       it('should be false if mismatch', function(done) {
         var jar = request.jar();
-        jar.add(request.cookie('session=' + mookie({
+        var cookie = request.cookie('session=' + mookie({
           proven: PROVEN_EMAIL,
           claimed: 'its.not.me@gmail.com'
-        })));
+        }));
+        jar.setCookie(cookie, url);
+
         request.get({ url: url, jar: jar }, function(err, res, body) {
           assert.ifError(err);
 
@@ -227,7 +234,7 @@ describe('HTTP Endpoints', function () {
       before(function (done) {
         // Generate a public key for the signing request
         var keyOpts = { algorithm: 'RS', keysize: 64 };
-        jwcrypto.generateKeypair(keyOpts, function (err, keypair) {
+        bidCrypto.generateKeypair(keyOpts, function (err, keypair) {
           pubkey = keypair.publicKey.serialize();
           done(err);
         });
@@ -235,9 +242,10 @@ describe('HTTP Endpoints', function () {
 
       it('should sign certificates', function (done) {
         var jar = request.jar();
-        jar.add(request.cookie('session=' + mookie({ proven: PROVEN_EMAIL })));
+        var cookie = request.cookie('session=' + mookie({ proven: PROVEN_EMAIL }));
+        jar.setCookie(cookie, url);
         var options = {
-          headers: { 'X-CSRF-Token': 'test' },
+          headers: { 'X-CSRF-Token': 'testSalt-5lTgCdom5sQd8ZQDXK8pvhCP5Go' },
           json: {
             email: CLAIMED_EMAIL,
             pubkey: pubkey,
@@ -247,7 +255,7 @@ describe('HTTP Endpoints', function () {
         };
 
         request.post(url, options, function(err, res, body) {
-          assert(jwcrypto.extractComponents(body.cert));
+          assert(bidCrypto.extractComponents(body.cert));
           done(err);
         });
       });
@@ -288,7 +296,16 @@ describe('HTTP Endpoints', function () {
       });
 
       it('should redirect to the OpenID endpoint', function () {
-        assert.equal(res.headers.location, 'http://openid.example');
+        var location = urlModule.parse(res.headers.location);
+        assert.equal(location.host, 'openid.example');
+      });
+
+      it('should acknowledge pending OpenID deprecation', function () {
+        var location = urlModule.parse(res.headers.location, true);
+        // Suppress camelCase warning
+        /* jshint -W106 */
+        assert.equal(location.query.openid_shutdown_ack, '2015-04-20');
+        /* jshint +W106 */
       });
     });
 
@@ -321,7 +338,60 @@ describe('HTTP Endpoints', function () {
 
   describe('/authenticate/verify', function () {
     var url = BASE_URL + '/authenticate/verify';
-    url; // Make JSHint shut up for the moment...
-    it('should have tests');
+
+    describe('well-formed requests', function() {
+      it('should check signed for email param', function(done) {
+        var options = {
+          qs: {
+            'openid.op_endpoint': 'https://www.google.com/accounts/o8/ud',
+            'openid.ns.foo': 'http://openid.net/srv/ax/1.0',
+            'openid.foo.type.bar': 'http://axschema.org/contact/email',
+            'openid.foo.value.bar': TEST_EMAIL,
+            'openid.claimed_id': 'https://www.google.com/accounts/o8/id?id=AItOawnpe2gwVe563V5tt1yUqsE4Db-uMsLfSiQ',
+            'openid.signed': 'op_endpoint,claimed_id,ns.foo,foo.value.bar,foo.type.bar'
+          }
+        };
+        request(url, options, function(err, res) {
+          assert.equal(res.statusCode, 200);
+          done(err);
+        });
+      });
+    });
+
+    describe('malformed requests', function() {
+      it('should fail if email is not signed', function(done) {
+        var options = {
+          qs: {
+            'openid.op_endpoint': 'https://www.google.com/accounts/o8/ud',
+            'openid.ns.foo': 'http://openid.net/srv/ax/1.0',
+            'openid.foo.type.bar': 'http://axschema.org/contact/email',
+            'openid.foo.value.bar': TEST_EMAIL,
+            'openid.signed': 'op_endpoint,ns.foo,foo.type.bar'
+          }
+        };
+
+        request.get(url, options, function(err, res) {
+          assert.equal(res.statusCode, 401);
+          done(err);
+        });
+      });
+
+      it('should fail if pointing to a differnet endpoint', function(done) {
+        var options = {
+          qs: {
+            'openid.op_endpoint': 'https://www.evilgoogle.com/accounts/o8/ud',
+            'openid.ns.foo': 'http://openid.net/srv/ax/1.0',
+            'openid.foo.type.bar': 'http://axschema.org/contact/email',
+            'openid.foo.value.bar': TEST_EMAIL,
+            'openid.claimed_id': 'https://www.google.com/accounts/o8/id?id=AItOawnpe2gwVe563V5tt1yUqsE4Db-uMsLfSiQ',
+            'openid.signed': 'op_endpoint,claimed_id,ns.foo,foo.value.bar,foo.type.bar'
+          }
+        };
+        request.get(url, options, function(err, res) {
+          assert.equal(res.statusCode, 401);
+          done(err);
+        });
+      });
+    });
   });
 });
