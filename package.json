@@ -18,17 +18,21 @@
     "test": "mocha --check-leaks"
   },
   "dependencies": {
+    "body-parser": "1.10.0",
     "browserid-crypto": "0.7.0",
     "client-sessions": "0.7.0",
     "connect-fonts": "2.0.2",
     "connect-fonts-opensans": "0.0.5",
     "convict": "0.6.0",
+    "csurf": "1.6.3",
     "ejs": "1.0.0",
-    "express": "3.18.4",
+    "express": "4.10.4",
     "i18n-abide": "0.0.22",
     "lockdown": "0.0.6",
+    "morgan": "1.5.0",
     "node-statsd": "0.1.0",
     "openid": "0.5.9",
+    "serve-favicon": "2.1.7",
     "validator": "3.22.2",
     "winston": "0.8.3"
   },

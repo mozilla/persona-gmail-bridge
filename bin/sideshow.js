@@ -8,8 +8,12 @@
 const path = require('path');
 const url = require('url');
 
+const bodyParser = require('body-parser');
+const csrf = require('csurf');
 const express = require('express');
+const favicon = require('serve-favicon');
 const i18n = require('i18n-abide');
+const morgan = require('morgan');
 const openid = require('openid');
 const clientSessions = require('client-sessions');
 const fonts = require('connect-fonts');
@@ -62,7 +66,7 @@ app.locals.errorInfo = undefined;
 // -- Express Middleware --
 
 app.use(statsd.middleware());
-app.use(express.json());
+app.use(bodyParser.json());
 
 if (USE_TLS) {
   app.use(function(req, res, next) {
@@ -80,8 +84,7 @@ app.use(csp([
   '/authenticate/verify'
 ]));
 
-app.use(express.favicon(
-  path.join(__dirname, '..', 'static', 'i', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, '..', 'static', 'i', 'favicon.ico')));
 
 app.use(clientSessions({
   cookieName: 'session',
@@ -93,25 +96,27 @@ app.use(clientSessions({
   }
 }));
 
-app.use(express.csrf());
+app.use(csrf());
 
-express.logger.token('path', function(req) {
+morgan.token('path', function(req) {
   return req.path;
 });
-express.logger.token('safe-referrer', function(req) {
+morgan.token('safe-referrer', function(req) {
   var referrer = req.headers.referer || req.headers.referrer || '';
   var queryIdx = referrer.indexOf('?');
   return (queryIdx < 0) ? referrer : referrer.slice(0, queryIdx);
 });
-app.use(express.logger({
-  format: ':remote-addr - - ":method :path HTTP/:http-version" :status ' +
-          ':response-time :res[content-length] ":safe-referrer" ":user-agent"',
-  stream: {
-    write: function(x) {
-      logger.info(String(x).trim());
+app.use(morgan(
+  ':remote-addr - - ":method :path HTTP/:http-version" :status ' +
+  ':response-time :res[content-length] ":safe-referrer" ":user-agent"',
+  {
+    stream: {
+      write: function(x) {
+        logger.info(String(x).trim());
+      }
     }
   }
-}));
+));
 
 // No user-specific information. Localized or caching otherwise discouraged.
 app.use(caching.revalidate([

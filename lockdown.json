@@ -19,6 +19,7 @@
     "1.1.3": "14d99f8ee3ea69f8709d4bd17ffe153bef0f6c6d"
   },
   "acorn": {
+    "0.4.2": "c79a8c12e98fe6c5a600f28070232d4ede308b0e",
     "0.9.0": "67728e0acad6cc61dfb901c121837694db5b926b"
   },
   "amdefine": {
@@ -84,12 +85,6 @@
   "basic-auth": {
     "1.0.0": "111b2d9ff8e4e6d136b8c84ea5e096cb87351637"
   },
-  "basic-auth-connect": {
-    "1.0.0": "fdb0b43962ca7b40456a7c2bb48fe173da2d2122"
-  },
-  "batch": {
-    "0.5.1": "36a4bab594c050fd7b507bca0db30c2d92af4ff2"
-  },
   "bigint": {
     "0.4.2": "5bccafb5af3924cc71eb59942fb3a64a12906e49"
   },
@@ -100,7 +95,7 @@
     "0.15.2": "a83b283accdacbf28e89774747cac352216f886a"
   },
   "body-parser": {
-    "1.9.3": "edfacd4fcfad87dfe74f861a5cc712900aef2623"
+    "1.10.0": "f884d11839af09e3c61e5011059e29cbfe452085"
   },
   "boom": {
     "0.4.2": "7a636e9ded4efcefb19cef4947a3c67dfaee911b"
@@ -175,17 +170,10 @@
   "commander": {
     "0.6.1": "fa68a14f6a945d54dbbe50d8cdb3320e9e3b1a06",
     "1.1.1": "50d1651868ae60eccff0a2d9f34595376bc6b041",
-    "1.3.2": "8a8f30ec670a6fdd64af52f1914b907d79ead5b5",
     "2.3.0": "fd430e889832ec353b9acd1de217c11cb3eef873"
   },
   "commondir": {
     "0.0.1": "89f00fdcd51b519c578733fec563e6a6da7f5be2"
-  },
-  "compressible": {
-    "2.0.1": "3550115793eb3435f7eb16775afe05df1a333ebc"
-  },
-  "compression": {
-    "1.2.1": "12ebaac04d308ca6103618a9716ce5634b939e9c"
   },
   "concat-map": {
     "0.0.0": "604be9c2afb6dc9ba8182e3ff294fdd48e238e6d"
@@ -196,17 +184,11 @@
   "config-chain": {
     "1.1.8": "0943d0b7227213a20d4eaff4434f4a1c0a052cad"
   },
-  "connect": {
-    "2.27.4": "12592c9d105326c5191176f8d57e760d6650c830"
-  },
   "connect-fonts": {
     "2.0.2": "b52c17c957da4223e42bcece3a3935ef1a932505"
   },
   "connect-fonts-opensans": {
     "0.0.5": "d84bab84802131267a44eca9f940c4424dd6961c"
-  },
-  "connect-timeout": {
-    "1.4.0": "b8003ea155abd18bbdd8a19c91e5284ddc2e465e"
   },
   "console-browserify": {
     "1.1.0": "f0241c45730a9fc6323b206dbf38edc741d0bb10"
@@ -225,9 +207,6 @@
   },
   "cookie": {
     "0.1.2": "72fec3d24e48a3432073d90c12642005061004b1"
-  },
-  "cookie-parser": {
-    "1.3.3": "7e3a2c745f4b460d5a340e578a0baa5d7725fe37"
   },
   "cookie-signature": {
     "1.0.5": "a122e3f1503eca0f5355795b0711bb2368d450f9"
@@ -344,11 +323,11 @@
   "elliptic": {
     "0.15.15": "63269184a856d6e00871e84f37a8401ff84e4aea"
   },
+  "encoding": {
+    "0.1.11": "52c65ac15aab467f1338451e2615f988eccc0258"
+  },
   "entities": {
     "1.0.0": "b2987aa3821347fcde642b24fdfc9e4fb712bf26"
-  },
-  "errorhandler": {
-    "1.2.3": "913bcc8cd1f10b6caeab4b38c1bc71fa3884ea52"
   },
   "escape-html": {
     "1.0.1": "181a286ead397a39a92857cfb1d43052e356bff0"
@@ -357,19 +336,15 @@
     "1.0.2": "4dbc2fe674e71949caf3fb2695ce7f2dc1d9a8d1"
   },
   "escodegen": {
-    "0.0.23": "9acf978164368e42276571f18839c823b3a844df",
     "1.4.1": "8c2562ff45da348975953e8c0a57f40848962ec7"
   },
   "esprima": {
-    "1.0.3": "7bdb544f95526d424808654d3b8fbe928650c0fe",
     "1.2.2": "76a0fd66fcfe154fd292667dc264019750b1657b"
   },
   "esprima-fb": {
     "3001.1.0-dev-harmony-fb": "b77d37abcd38ea0b77426bb8bc2922ce6b426411"
   },
   "estraverse": {
-    "0.0.4": "01a0932dfee574684a598af5a67c3bf9b6428db2",
-    "1.1.2-1": "28ff59bb3cf1272a2027e1c1541f94b23226b311",
     "1.9.0": "738824ba445fab7ff2e42c7a7a98e7cf7ac2becf"
   },
   "esutils": {
@@ -385,10 +360,7 @@
     "0.1.2": "0632638f8d877cc82107d30a0fff1a17cba1cd0c"
   },
   "express": {
-    "3.18.4": "7b40ad2c10a987692ee97a387c21593011f03712"
-  },
-  "express-session": {
-    "1.9.3": "7d2fc387af6fd928775213bfe9d635a5705a84ce"
+    "4.10.4": "31aa70acdad6b6093945c30523df8537336deb58"
   },
   "eyes": {
     "0.1.8": "62cf120234c683785d902348a800ef3e0cc20bc0"
@@ -414,6 +386,9 @@
   "fresh": {
     "0.2.4": "3582499206c9723714190edd74b4604feb4a614c"
   },
+  "gettext-parser": {
+    "0.2.0": "541b99e2720e460163055c64e99b1422e3e995f5"
+  },
   "github-url-from-git": {
     "1.1.1": "1f89623453123ef9623956e264c60bf4c3cf5ccf",
     "1.4.0": "285e6b520819001bde128674704379e4ff03e0de"
@@ -428,7 +403,7 @@
     "4.3.1": "9d09096f89b4d30949e784e83f312af3ca04ec14"
   },
   "gobbledygook": {
-    "0.0.3": "437bb23d3ade04dd26b49e7c21e4026c6b086234"
+    "0.0.4": "*"
   },
   "graceful-fs": {
     "2.0.3": "7cd2cdb228a4a3f36e95efa6cc142de7d1a136d0",
@@ -465,7 +440,7 @@
     "0.0.0": "b3ffdfe734b2a3d4a9efd58e8654c91fce86eafd"
   },
   "i18n-abide": {
-    "0.0.8": "a7610465be083a21e1c2f52e2fd78503ee90dd29"
+    "0.0.22": "b4934dcb5359d323be05d68e19a70cc6473ab924"
   },
   "iconv-lite": {
     "0.4.5": "9c574b70c30d615859f2064d2be4335ad6b1a8d6"
@@ -529,7 +504,7 @@
     "0.0.5": "330542ad3f0a654665b778f3eb2d9a9fa507ac64"
   },
   "jsxgettext": {
-    "0.1.3": "db9dd0bedd531606cdd5fd978dd75d383fd99327"
+    "0.3.9": "101908cae6a3dd930be21d596c95f4b3ec3da905"
   },
   "keygrip": {
     "1.0.1": "b02fa4816eef21a8c4b35ca9e52921ffc89a30e9"
@@ -556,9 +531,6 @@
   "merge-descriptors": {
     "0.0.2": "c36a52a781437513c57275f39dd9d317514ac8c7"
   },
-  "method-override": {
-    "2.3.0": "fe820769594247ede8a6ca87b8eaa413084e595e"
-  },
   "methods": {
     "1.1.0": "5dca4ee12df52ff3b056145986a8f01cbc86436f"
   },
@@ -569,8 +541,7 @@
     "1.2.11": "58203eed86e3a5ef17aed2b7d9ebd47f0a60dd10"
   },
   "mime-db": {
-    "1.2.0": "76b92e7ecac673f5dab066a10b66faea1be2f01f",
-    "1.3.0": "5fefeb25dd9b097c5d45091c60f8149b98d749ec"
+    "1.2.0": "76b92e7ecac673f5dab066a10b66faea1be2f01f"
   },
   "mime-types": {
     "1.0.2": "995ae1392ab8affcbfcb2641dd054e943c0d5dce",
@@ -605,13 +576,10 @@
     "0.1.50": "9a7cbd0ccc10de95fd78a04b9beb2482ae4940b7"
   },
   "morgan": {
-    "1.4.1": "cd9600c3fa74e2fdf22ba0f1d026c20cb96f25fe"
+    "1.5.0": "6d2cf4f142a3c78b36762711d79b13f8e35b5e83"
   },
   "ms": {
     "0.6.2": "d89c2124c6fdc1353d65a8b77bf1aac4b193708c"
-  },
-  "multiparty": {
-    "3.3.2": "35de6804dc19643e5249f3d3e3bdc6c8ce301d3f"
   },
   "mz": {
     "1.1.0": "fa63f08f20a1f6985cc1d9a33efa8db608cd6b9c"
@@ -658,9 +626,6 @@
   "on-finished": {
     "2.1.1": "f82ca1c9e3a4f3286b1b9938610e5b8636bd3cb2"
   },
-  "on-headers": {
-    "1.0.0": "2c75b5da4375513d0161c6052e7fcbe4953fca5d"
-  },
   "once": {
     "1.3.1": "f3f3e4da5b7d27b5c732969ee3e67e729457b31f"
   },
@@ -698,8 +663,8 @@
   "path-platform": {
     "0.0.1": "b5585d7c3c463d89aa0060d86611cf1afd617e2a"
   },
-  "pause": {
-    "0.0.1": "1d408b3fdb76923b9543d96fb4c9dfd535d9cb5d"
+  "path-to-regexp": {
+    "0.1.3": "21b9ab82274279de25b156ea08fd12ca51b8aecb"
   },
   "pbkdf2-compat": {
     "2.0.1": "b6e0c8fa99494d94e0511575802a59a5c142f288"
@@ -709,6 +674,9 @@
   },
   "pkginfo": {
     "0.3.0": "726411401039fe9b009eea86614295d5f3a54276"
+  },
+  "plist": {
+    "0.4.3": "812842a873aa57f98d0050bee6aaf3549b9d5798"
   },
   "process": {
     "0.5.2": "1638d8a8e34c2f440a91db95ab9aeb677fc185cf",
@@ -774,9 +742,6 @@
   "response-stream": {
     "0.0.0": "da4b17cc7684c98c962beb4d95f668c8dcad09d5"
   },
-  "response-time": {
-    "2.2.0": "77ab4688cbf030e9c5f82dc1eac7fe5226d3c8eb"
-  },
   "rfile": {
     "1.0.0": "59708cf90ca1e74c54c3cfc5c36fdb9810435261"
   },
@@ -805,9 +770,6 @@
   },
   "serve-favicon": {
     "2.1.7": "7b911c0ea4c0f9a2ad686daa5222766f7bc7db79"
-  },
-  "serve-index": {
-    "1.5.2": "5b5c292838d16232a788a3f8a9b78e64c640dff6"
   },
   "serve-static": {
     "1.7.1": "6ea54d5ba7ef563f00e5fad25d0e4f5307e9809b"
@@ -854,9 +816,6 @@
   },
   "stream-combiner2": {
     "1.0.2": "ba72a6b50cbfabfa950fc8bc87604bd01eb60671"
-  },
-  "stream-counter": {
-    "0.2.0": "ded266556319c8b0e222812b9cf3b26fa7d947de"
   },
   "stream-splicer": {
     "1.3.1": "87737a08777aa00d6a27d92562e7bc88070c081d"
@@ -962,9 +921,6 @@
   "vary": {
     "1.0.0": "c5e76cec20d3820d8f2a96e7bee38731c34da1e7"
   },
-  "vhost": {
-    "3.0.0": "2d0ec59a3e012278b65adbe17c1717a5a5023045"
-  },
   "vm-browserify": {
     "0.0.4": "5d7ea45bbef9e4a6ff65f95438e0a87c357d5a73"
   },
@@ -986,6 +942,12 @@
   "xml2js": {
     "0.1.13": "438ff3b1d85a51ad659ffc2ebe83403e10c98722",
     "0.2.8": "9b81690931631ff09d1957549faf54f4f980b3c2"
+  },
+  "xmlbuilder": {
+    "0.4.3": "c4614ba74e0ad196e609c9272cd9e1ddb28a8a58"
+  },
+  "xmldom": {
+    "0.1.19": "631fc07776efd84118bf25171b37ed4d075a0abc"
   },
   "xtend": {
     "2.1.2": "6efecc2a4dad8e6962c4901b337ce7ba87b5d28b",
