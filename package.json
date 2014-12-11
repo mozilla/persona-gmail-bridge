@@ -5,7 +5,7 @@
   "description": "An experiment in building a minimal Gmail ProxyIDP",
   "repository": {
     "type": "git",
-    "url": "https://github.com/callahad/sideshow"
+    "url": "https://github.com/mozilla/persona-gmail-bridge"
   },
   "author": "Dan Callahan <dan.callahan@gmail.com> (http://dancallahan.info)",
   "contributors": [
