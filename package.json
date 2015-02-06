@@ -40,6 +40,7 @@
     "jshint": "2.5.10",
     "mocha": "2.0.1",
     "request": "2.49.0",
+    "tough-cookie": "0.12.1",
     "walkdir": "0.0.7"
   },
   "engines": {
