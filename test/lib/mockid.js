@@ -3,51 +3,54 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 const assert = require('assert');
-
-var MockUserInfoService = {
-  withAuthClient: function (client) {
-    return {
-      execute: function (callback) {
-        callback(client);
-      }
-    };
-  }
-};
-
-var MockGoogleServices = {
-  oauth2: {
-    userinfo: {
-      get: function () {
-        var userInfoService = Object.create(MockUserInfoService);
-        return userInfoService;
-      }
-    }
-  }
-};
+const querystring = require('querystring');
 
 var MockOAuth2Client = {
-  generateAuthUrl: function () {
-    return this.options.url;
+  generateAuthUrl: function (options) {
+    return this.options.url + '?' + querystring.stringify(options);
+  },
+
+  getToken: function (code, callback) {
+    callback(null, 'token');
+  }
+};
+
+var MockUserInfo = {
+  get: function (params, callback) {
+    // make sure the credentials get set to the expected token
+    if (params.auth.credentials === 'token') {
+      callback(null, {
+        /*jshint camelcase: false*/
+        verified_email: this.options.result.authenticated,
+        email: this.options.result.email
+      });
+    }
   }
 };
 
 module.exports = function mockid(options) {
   return {
-    OAuth2Client: function (clientId, clientSecret, redirectUri) {
-      assert.ok(clientId);
-      assert.ok(clientSecret);
-      assert.ok(redirectUri);
+    auth: {
+      OAuth2: function (clientId, clientSecret, redirectUri) {
+        assert.ok(clientId);
+        assert.ok(clientSecret);
+        assert.ok(redirectUri);
 
-      var client = Object.create(MockOAuth2Client);
-      client.options = options;
-      return client;
+        var client = Object.create(MockOAuth2Client);
+        client.options = options;
+
+        return client;
+      }
     },
-    discover: function (/*type, version*/) {
+
+    oauth2: function (version) {
+      assert.ok(version);
+
+      var userInfo = Object.create(MockUserInfo);
+      userInfo.options = options;
+
       return {
-        execute: function (callback) {
-          var googleServices = Object.create(MockGoogleServices);
-          callback(null, googleServices);
-        }
+        userinfo: userInfo
       };
     }
   };
