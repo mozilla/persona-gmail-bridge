@@ -97,7 +97,7 @@ app.use(clientSessions({
   duration: config.get('session.duration'),
   cookie: {
     maxAge: config.get('session.duration'),
-    secure: USE_TLS
+    secureProxy: USE_TLS
   }
 }));
 
