@@ -7,6 +7,7 @@
 
 const path = require('path');
 const url = require('url');
+const crypto = require('crypto');
 
 const bodyParser = require('body-parser');
 const csrf = require('csurf');
@@ -14,7 +15,6 @@ const express = require('express');
 const favicon = require('serve-favicon');
 const i18n = require('i18n-abide');
 const morgan = require('morgan');
-const openid = require('openid');
 const clientSessions = require('client-sessions');
 const fonts = require('connect-fonts');
 const opensans = require('connect-fonts-opensans');
@@ -28,10 +28,11 @@ const cert = require('../lib/cert');
 const keys = require('../lib/keys');
 const statsd = require('../lib/statsd');
 const validate = require('../lib/validate');
-const oidTool = require('../lib/openid-tool');
 const xframe = require('../lib/xframe');
+const google = require('../lib/google');
 
 const USE_TLS = url.parse(config.get('server.publicUrl')).protocol === 'https:';
+const STATE_TOKEN_LENGTH = 24;
 
 if (config.get('session.secret') === config.default('session.secret')) {
   logger.warn('*** Using ephemeral secret for signing cookies. ***');
@@ -41,18 +42,6 @@ if (config.get('session.secret') === config.default('session.secret')) {
 keys(function() {
   logger.debug('*** Keys loaded. ***');
 });
-
-var openidRP = new openid.RelyingParty(
-  config.get('server.publicUrl') + '/authenticate/verify', // Verification URL
-  config.get('server.openidRealm'), // Realm
-  true, // Use stateless verification
-  false, // Strict mode
-  [ // List of extensions to enable and include
-    new openid.AttributeExchange(
-      {'http://axschema.org/contact/email': 'required'}),
-    new openid.UserInterface({mode: 'popup'})
-  ]);
-const googleEndpoint = 'https://www.google.com/accounts/o8/id';
 
 const app = express();
 
@@ -163,12 +152,7 @@ app.get('/ver.txt', function (req, res) {
 });
 
 app.get('/__heartbeat__', function (req, res) {
-  openid.discover(googleEndpoint, true, function(err/*, providers*/) {
-    if (err) {
-      return res.status(500).end('bad');
-    }
-    res.send('ok');
-  });
+  res.send('ok');
 });
 
 app.get('/.well-known/browserid', function (req, res) {
@@ -206,6 +190,7 @@ app.post('/provision/certify', validate({
 
     // trying to sign a cert? then kill this cookie while we're here.
     req.session.reset();
+
     if (!isCorrectEmail) {
       logger.error('Email not proven, will not sign certificate');
       statsd.increment('certification.failure.no_proof');
@@ -258,21 +243,19 @@ app.get('/authenticate/forward', validate({ email: 'gmail' }),
       });
     }
 
-    openidRP.authenticate(googleEndpoint, false, function (error, authUrl) {
+    var stateToken = crypto.randomBytes(STATE_TOKEN_LENGTH).toString('hex');
+    google.getAuthUrl(req.query.email, stateToken, function(error, authUrl) {
       if (error || !authUrl) {
         logger.error('Auth forwarding failed [Error: %s, authUrl: %s]',
           String(error), authUrl);
-        statsd.increment('authentication.forwarding.failure.openid_error');
+        statsd.increment('authentication.forwarding.failure.oauth_error');
         res.status(500).render('error', { title: req.gettext('Error') });
       } else {
         statsd.increment('authentication.forwarding.success');
         req.session.claimed = req.query.email;
+        req.session.state = stateToken;
 
-        var dest = url.parse(authUrl, true);
-        delete dest.search; // search takes priority over query in url.format()
-        dest.query.openid_shutdown_ack = '2015-04-20';
-
-        res.redirect(url.format(dest));
+        res.redirect(authUrl);
       }
     });
   });
@@ -280,43 +263,57 @@ app.get('/authenticate/forward', validate({ email: 'gmail' }),
 
 app.get('/authenticate/verify', function (req, res) {
   // Check input precondition:
+  // The bridge should return the expected state token.
+  if (! (req.query.state &&
+         req.session.state &&
+         req.query.state === req.session.state)) {
+    logger.error('Invalid or missing state');
+    statsd.increment('authentication.oauth.failure.no_state');
+    return res.status(400).render('error',
+      { title: req.gettext('Error'), errorInfo: 'Invalid or missing state.' });
+  }
+  // a state token is only good for one request
+  delete req.session.state;
+
+  var code = req.query.code;
+  if (!code) {
+    logger.error('Invalid or missing code');
+    statsd.increment('authentication.oauth.failure.no_code');
+    return res.status(400).render('error',
+      { title: req.gettext('Error'), errorInfo: 'Invalid or missing code.' });
+  }
+
+  // Check input precondition:
   // Session should include a valid email address that the user is claiming.
   if (!email.valid(req.session.claimed)) {
     logger.error('Invalid or missing claimed email');
-    statsd.increment('authentication.openid.failure.no_claim');
+    statsd.increment('authentication.oauth.failure.no_claim');
     return res.status(400).render('error',
       { title: req.gettext('Error'), errorInfo: 'Invalid or missing claim.' });
   }
 
-  // Check input precondition:
-  // OpenID params must include only one email address, and it must be signed.
-  if (!oidTool.validParams(req.query)) {
-    return res.status(401).render('error',
-      { title: req.gettext('Error'), errorInfo: 'Email not signed.' });
-  }
-
-  openidRP.verifyAssertion(req, function (error, result) {
+  google.tradeCodeForEmail(code, function (error, result) {
     if (error && error.message === 'Authentication cancelled') {
-      logger.info('User cancelled during openid dialog');
-      statsd.increment('authentication.openid.failure.cancelled');
+      logger.info('User cancelled during oauth dialog');
+      statsd.increment('authentication.oauth.failure.cancelled');
       res.render('authenticate_finish',
         { title: req.gettext('Loading...'), success: false });
     } else if (error || !result.authenticated || !email.valid(result.email)) {
       if (!error) {
         error = new Error('Not authenticated');
       }
-      logger.error('OpenID verification failed: %s', String(error));
-      statsd.increment('authentication.openid.failure.bad_result');
+      logger.error('OAuth verification failed: %s', String(error));
+      statsd.increment('authentication.oauth.failure.bad_result');
       res.status(403).render('error',
         { title: req.gettext('Error'), errorInfo: error.message });
     } else if (email.compare(req.session.claimed, result.email)) {
-      statsd.increment('authentication.openid.success');
+      statsd.increment('authentication.oauth.success');
       req.session.proven = result.email;
       res.render('authenticate_finish',
         { title: req.gettext('Loading...'), success: true });
     } else {
       logger.info('User accounts do no match');
-      statsd.increment('authentication.openid.failure.mismatch');
+      statsd.increment('authentication.oauth.failure.mismatch');
       res.status(409).render('error_mismatch',
         { title: req.gettext("Accounts don't match"),
           claimed: req.session.claimed, proven: result.email });
@@ -340,7 +337,3 @@ if (require.main === module) {
 
 module.exports = app;
 
-// expose openidRP so we can mock in tests
-app.setOpenIDRP = function setOpenIDRP(rp) {
-  openidRP = rp;
-};
