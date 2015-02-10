@@ -275,6 +275,14 @@ app.get('/authenticate/verify', function (req, res) {
   // a state token is only good for one request
   delete req.session.state;
 
+  // Fail early if the user hit cancel in the OAuth dialog
+  if (req.query.error === 'access_denied') {
+      logger.info('User cancelled during oauth dialog');
+      statsd.increment('authentication.oauth.failure.cancelled');
+      return res.render('authenticate_finish',
+        { title: req.gettext('Loading...'), success: false });
+  }
+
   var code = req.query.code;
   if (!code) {
     logger.error('Invalid or missing code');
