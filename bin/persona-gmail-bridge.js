@@ -301,12 +301,7 @@ app.get('/authenticate/verify', function (req, res) {
   }
 
   google.tradeCodeForEmail(code, function (error, result) {
-    if (error && error.message === 'Authentication cancelled') {
-      logger.info('User cancelled during oauth dialog');
-      statsd.increment('authentication.oauth.failure.cancelled');
-      res.render('authenticate_finish',
-        { title: req.gettext('Loading...'), success: false });
-    } else if (error || !result.authenticated || !email.valid(result.email)) {
+    if (error || !email.valid(result.email)) {
       if (!error) {
         error = new Error('Not authenticated');
       }
