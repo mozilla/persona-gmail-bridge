@@ -12,6 +12,10 @@ var MockOAuth2Client = {
 
   getToken: function (code, callback) {
     callback(null, 'token');
+  },
+
+  setCredentials: function(credentials) {
+    this.credentials = credentials;
   }
 };
 
