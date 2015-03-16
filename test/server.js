@@ -10,19 +10,22 @@ if (config.get('logPath') === config.default('logPath') &&
   config.set('logPath', '/dev/null');
 }
 
+const url = require('url');
+const querystring = require('querystring');
 const assert = require('assert');
-const urlModule = require('url');
 
 const bidCrypto = require('browserid-crypto');
 // Fixme: don't use global cookie jar
 const request = require('request').defaults({jar: true});
-const openid = require('openid');
+const google = require('../lib/google');
 
 const app = require('../bin/persona-gmail-bridge');
 const mockid = require('./lib/mockid');
 const mookie = require('./lib/cookie');
 
 const BASE_URL = 'http://localhost:3033';
+const FORWARD_URL = BASE_URL + '/authenticate/forward';
+const VERIFY_URL = BASE_URL + '/authenticate/verify';
 const TEST_EMAIL = 'hikingfan@gmail.com';
 const PROVEN_EMAIL = TEST_EMAIL;
 const CLAIMED_EMAIL = 'hiking.fan+1@gmail.com';
@@ -34,14 +37,13 @@ describe('HTTP Endpoints', function () {
   var server;
 
   before(function (done) {
-    app.setOpenIDRP(mockid({
-      url: 'http://openid.example?foo=bar',
+    google.setGoogleApis(mockid({
+      url: 'http://oauth.example',
       result: {
         authenticated: true,
         email: TEST_EMAIL
       }
     }));
-
     server = app.listen(3033, undefined, undefined, done);
   });
 
@@ -81,14 +83,9 @@ describe('HTTP Endpoints', function () {
     var body;
 
     before(function (done) {
-      var discover = openid.discover;
-      openid.discover = function(a, b, cb) {
-        cb(null, [{}]);
-      };
       request.get(url, function (err, _res, _body) {
         res = _res;
         body = _body;
-        openid.discover = discover;
         done(err);
       });
     });
@@ -274,7 +271,7 @@ describe('HTTP Endpoints', function () {
   });
 
   describe('/authenticate/forward', function () {
-    var url = BASE_URL + '/authenticate/forward';
+    var url = FORWARD_URL;
 
     describe('well-formed requests', function () {
       var options = {
@@ -296,17 +293,15 @@ describe('HTTP Endpoints', function () {
         assert.equal(res.statusCode, 302);
       });
 
-      it('should redirect to the OpenID endpoint', function () {
-        var location = urlModule.parse(res.headers.location);
-        assert.equal(location.host, 'openid.example');
-      });
-
-      it('should acknowledge pending OpenID deprecation', function () {
-        var location = urlModule.parse(res.headers.location, true);
-        // Suppress camelCase warning
-        /* jshint -W106 */
-        assert.equal(location.query.openid_shutdown_ack, '2015-04-20');
-        /* jshint +W106 */
+      it('should redirect to the OAuth endpoint', function () {
+        var location = res.headers.location;
+        assert.ok(location.indexOf('http://oauth.example') > -1);
+        assert.ok(location.indexOf('state=') > -1);
+        assert.ok(location.indexOf(
+              'scope=' + encodeURIComponent('openid email')) > -1);
+        assert.ok(location.indexOf('openid.realm=') > -1);
+        assert.ok(location.indexOf(
+              'login_hint=' + encodeURIComponent(TEST_EMAIL)) > -1);
       });
     });
 
@@ -338,58 +333,93 @@ describe('HTTP Endpoints', function () {
   });
 
   describe('/authenticate/verify', function () {
-    var url = BASE_URL + '/authenticate/verify';
-
     describe('well-formed requests', function() {
-      it('should check signed for email param', function(done) {
-        var options = {
+      it('should succeed if code is specified, returned email matches claimed email', function(done) {
+        // use a cookieJar so session information (claimed email, state token,
+        // etc) is remembered between requests.
+        var cookieJar = request.jar();
+        var forwardOptions = {
+          followRedirect: false,
+          url: FORWARD_URL,
+          jar: cookieJar,
           qs: {
-            'openid.op_endpoint': 'https://www.google.com/accounts/o8/ud',
-            'openid.ns.foo': 'http://openid.net/srv/ax/1.0',
-            'openid.foo.type.bar': 'http://axschema.org/contact/email',
-            'openid.foo.value.bar': TEST_EMAIL,
-            'openid.claimed_id': 'https://www.google.com/accounts/o8/id?id=AItOawnpe2gwVe563V5tt1yUqsE4Db-uMsLfSiQ',
-            'openid.signed': 'op_endpoint,claimed_id,ns.foo,foo.value.bar,foo.type.bar'
+            email: TEST_EMAIL
           }
         };
-        request(url, options, function(err, res) {
-          assert.equal(res.statusCode, 200);
-          done(err);
+
+        request(forwardOptions, function (err, res) {
+          // fetch the state token out of the forward URL
+          var parsedLocation = url.parse(res.headers.location);
+          var queryParams = querystring.parse(parsedLocation.query);
+
+          var verifyOptions = {
+            url: VERIFY_URL,
+            jar: cookieJar,
+            qs: {
+              'code': 'thisisafakecode',
+              'state': queryParams.state
+            }
+          };
+
+          request(verifyOptions, function (err, res) {
+            assert.equal(res.statusCode, 200);
+            done(err);
+          });
         });
       });
     });
 
     describe('malformed requests', function() {
-      it('should fail if email is not signed', function(done) {
+      it('should fail if misisng state token', function (done) {
         var options = {
           qs: {
-            'openid.op_endpoint': 'https://www.google.com/accounts/o8/ud',
-            'openid.ns.foo': 'http://openid.net/srv/ax/1.0',
-            'openid.foo.type.bar': 'http://axschema.org/contact/email',
-            'openid.foo.value.bar': TEST_EMAIL,
-            'openid.signed': 'op_endpoint,ns.foo,foo.type.bar'
+            code: 'thisisafakecode'
           }
         };
 
-        request.get(url, options, function(err, res) {
-          assert.equal(res.statusCode, 401);
+        request.get(VERIFY_URL, options, function(err, res) {
+          assert.equal(res.statusCode, 400);
           done(err);
         });
       });
 
-      it('should fail if pointing to a differnet endpoint', function(done) {
-        var options = {
+      it('should fail if state token does not match expected', function (done) {
+        var cookieJar = request.jar();
+        var forwardOptions = {
+          followRedirect: false,
+          url: FORWARD_URL,
+          jar: cookieJar,
           qs: {
-            'openid.op_endpoint': 'https://www.evilgoogle.com/accounts/o8/ud',
-            'openid.ns.foo': 'http://openid.net/srv/ax/1.0',
-            'openid.foo.type.bar': 'http://axschema.org/contact/email',
-            'openid.foo.value.bar': TEST_EMAIL,
-            'openid.claimed_id': 'https://www.google.com/accounts/o8/id?id=AItOawnpe2gwVe563V5tt1yUqsE4Db-uMsLfSiQ',
-            'openid.signed': 'op_endpoint,claimed_id,ns.foo,foo.value.bar,foo.type.bar'
+            email: TEST_EMAIL
           }
         };
-        request.get(url, options, function(err, res) {
-          assert.equal(res.statusCode, 401);
+
+        request(forwardOptions, function () {
+          var verifyOptions = {
+            url: VERIFY_URL,
+            jar: cookieJar,
+            qs: {
+              code: 'thisisafakecode',
+              state: 'invalidstatetoken'
+            }
+          };
+
+          request(verifyOptions, function (err, res) {
+            assert.equal(res.statusCode, 400);
+            done(err);
+          });
+        });
+      });
+
+      it('should fail if code is missing', function(done) {
+        var options = {
+          qs: {
+            state: 'validstatetoken',
+          }
+        };
+
+        request.get(VERIFY_URL, options, function(err, res) {
+          assert.equal(res.statusCode, 400);
           done(err);
         });
       });
